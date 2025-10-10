@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Kiếm Khách Hàng CRM</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #f4f4f4; 
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+        .logo { 
+            width: 150px; 
+            height: auto; 
+            border-radius: 50%; 
+        }
+        .search-form { 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+        .search-form input[type="text"] { 
+            padding: 10px; 
+            width: 200px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+        }
+        .search-form button { 
+            padding: 10px 20px; 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-left: 10px; 
+        }
+        .search-form button:hover { 
+            background-color: #0056b3; 
+        }
+        .result { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+            display: none; 
+        }
+        .customer-info { 
+            margin-bottom: 20px; 
+        }
+        .avatar { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 50%; 
+            float: left; 
+            margin-right: 20px; 
+        }
+        .orders { 
+            clear: both; 
+        }
+        .order { 
+            border: 1px solid #ddd; 
+            margin-bottom: 10px; 
+            padding: 10px; 
+            border-radius: 5px; 
+        }
+        .item-img { 
+            width: 50px; 
+            height: 50px; 
+            margin-right: 10px; 
+        }
+        .no-result { 
+            text-align: center; 
+            color: #666; 
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://via.placeholder.com/150?text=CRM+Logo" alt="Logo CRM" class="logo">
+        <h1>Tìm Kiếm Khách Hàng</h1>
+    </div>
+
+    <div class="search-form">
+        <input type="text" id="NhapSoDienThoai" placeholder="Nhập số điện thoại khách hàng">
+        <button id="TimKiem" onclick="timKiemKhachHang()">Tìm Kiếm</button>
+    </div>
+
+    <div id="result" class="result">
+        <div id="customer-info" class="customer-info"></div>
+        <div id="orders" class="orders"></div>
+    </div>
+
+    <script>
+        let data = [];  // Lưu dữ liệu JSON toàn cục
+
+        // Tải dữ liệu JSON khi load trang
+        window.onload = function() {
+            fetch('crm_data.json')
+                .then(response => response.json())
+                .then(jsonData => {
+                    data = jsonData;
+                })
+                .catch(error => console.error('Lỗi tải JSON:', error));
+        };
+
+        function timKiemKhachHang() {
+            const phone = document.getElementById('NhapSoDienThoai').value.trim();
+            if (!phone) {
+                alert('Vui lòng nhập số điện thoại!');
+                return;
+            }
+
+            const customer = data.find(c => c.PhoneNumber === phone);
+            const resultDiv = document.getElementById('result');
+            const customerInfoDiv = document.getElementById('customer-info');
+            const ordersDiv = document.getElementById('orders');
+
+            if (!customer) {
+                customerInfoDiv.innerHTML = '<p class="no-result">Không tìm thấy khách hàng với số điện thoại này.</p>';
+                ordersDiv.innerHTML = '';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            // Hiển thị thông tin khách hàng
+            const avatarSrc = customer.AvatarData ? `data:image/png;base64,${customer.AvatarData}` : 'https://via.placeholder.com/100?text=No+Avatar';
+            customerInfoDiv.innerHTML = `
+                <img src="${avatarSrc}" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/100?text=No+Avatar';">
+                <h2>${customer.CustomerName}</h2>
+                <p><strong>ID:</strong> ${customer.CustomerId}</p>
+                <p><strong>Địa chỉ:</strong> ${customer.Address}</p>
+                <p><strong>Số ĐT:</strong> ${customer.PhoneNumber}</p>
+                <p><strong>Ghi chú:</strong> ${customer.Note || 'Không có'}</p>
+            `;
+
+            // Hiển thị đơn hàng
+            if (customer.Orders && customer.Orders.length > 0) {
+                let ordersHtml = '<h3>Đơn hàng đang đặt:</h3>';
+                customer.Orders.forEach(order => {
+                    ordersHtml += `
+                        <div class="order">
+                            <h4>ID Đơn: ${order.OrderId} - Tổng tiền: ${order.GrandTotal.toLocaleString('vi-VN')} VNĐ</h4>
+                            <p>Tiền cọc: ${order.Deposit.toLocaleString('vi-VN')} VNĐ | Giảm giá: ${order.Discount.toLocaleString('vi-VN')} VNĐ | Phí ship: ${order.ShippingCost.toLocaleString('vi-VN')} VNĐ</p>
+                            <p>Ghi chú: ${order.Note || 'Không có'}</p>
+                            ${order.Items && order.Items.length > 0 ? `
+                                <div>Sản phẩm:</div>
+                                ${order.Items.map(item => `
+                                    <div style="display: flex; align-items: center; margin: 5px 0;">
+                                        ${item.ImageData ? `<img src="data:image/png;base64,${item.ImageData}" alt="Sản phẩm" class="item-img" onerror="this.style.display='none';">` : ''}
+                                        <div>
+                                            <strong>${item.ItemId || 'N/A'}:</strong> ${item.Description || 'Không có mô tả'}<br>
+                                            Yêu cầu: ${item.Requirement || 'Không có'} | Giá: ${item.UnitPrice.toLocaleString('vi-VN')} VNĐ x ${item.Quantity} = ${item.TotalPrice.toLocaleString('vi-VN')} VNĐ
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            ` : '<p>Chưa có sản phẩm trong đơn này.</p>'}
+                        </div>
+                    `;
+                });
+                ordersDiv.innerHTML = ordersHtml;
+            } else {
+                ordersDiv.innerHTML = '<p class="no-result">Khách hàng chưa có đơn hàng nào.</p>';
+            }
+
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
