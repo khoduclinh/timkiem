@@ -55,7 +55,7 @@
             border-radius: 5px;
             font-size: 16px;
             width: 100%;
-            max-width: 200px;
+            max-width: 250px;
             margin: 0 auto;
         }
         .search-form button { 
@@ -170,12 +170,22 @@
             }
             .search-form {
                 padding: 20px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
             }
             .search-form input[type="text"] {
-                max-width: none;
+                max-width: 200px;
+                flex: 1;
+                margin: 0;
             }
             .search-form button {
                 max-width: none;
+                width: auto;
+                flex: 0 0 auto;
+                margin: 0;
+                min-width: 100px;
             }
             .header h1 {
                 font-size: 2em;
@@ -221,6 +231,19 @@
             .logo {
                 width: 100px;
             }
+            .search-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .search-form input[type="text"] {
+                max-width: none;
+                flex: none;
+            }
+            .search-form button {
+                max-width: none;
+                width: 100%;
+                flex: none;
+            }
         }
     </style>
 </head>
@@ -232,7 +255,7 @@
         </div>
 
         <div class="search-form">
-            <input type="text" id="NhapSoDienThoai" placeholder="Nhập số điện thoại của bạn">
+            <input type="text" id="NhapSoDienThoai" placeholder="Nhập số điện thoại">
             <button id="TimKiem" onclick="timKiemKhachHang()">Tìm Kiếm</button>
         </div>
 
@@ -243,7 +266,7 @@
 
         <div class="footer-banner">
             <strong>ĐỨC LINH STORE</strong>
-            <div><i class="fa fa-home"></i> TDP6 - Thiên Hương - Thủy Nguyên - HP</div>
+            <div><i class="fa fa-home"></i> TDP6 - Thiên Hương - Thủy Nguyên - Hải Phòng</div>
             <div><i class="fa fa-phone"></i> 0934 366 766 - 0775 885 665</div>
         </div>
     </div>
