@@ -137,6 +137,18 @@
         .item-detail {
             flex: 1;
         }
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .item-field {
+            font-size: 14px;
+            color: #555;
+        }
+        .item-field strong {
+            color: #333;
+        }
         .no-result { 
             text-align: center;
             color: #666;
@@ -321,8 +333,12 @@
                                             <div class="item-row">
                                                 ${item.ImageData ? `<img src="data:image/png;base64,${item.ImageData}" alt="Sản phẩm" class="item-img" onerror="this.style.display='none';">` : ''}
                                                 <div class="item-detail">
-                                                    <strong>${item.ItemName || 'N/A'}:</strong> ${item.Description || 'Không có mô tả'}<br>
-                                                    Số lượng: ${item.Quantity || 0} | Giá: ${(item.UnitPrice || 0).toLocaleString('vi-VN')} VNĐ | Tổng: ${(item.TotalPrice || 0).toLocaleString('vi-VN')} VNĐ
+                                                    <div class="item-info">
+                                                        <div class="item-field"><strong>ItemId:</strong> ${item.ItemId || 'N/A'}</div>
+                                                        <div class="item-field"><strong>Requirement:</strong> ${item.Requirement || 'Không có'}</div>
+                                                        <div class="item-field"><strong>Quantity:</strong> ${item.Quantity || 0}</div>
+                                                        <div class="item-field"><strong>Note:</strong> ${item.Note || 'Không có'}</div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         `).join('')}
