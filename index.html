@@ -114,10 +114,6 @@
             border-radius: 8px;
             background: #f9f9f9;
         }
-        .order h4 {
-            margin: 0 0 10px;
-            color: #007bff;
-        }
         .order p {
             margin: 5px 0;
             color: #666;
@@ -325,24 +321,17 @@
                         orders.forEach(order => {
                             ordersHtml += `
                                 <div class="order">
-                                    <h4>ID Đơn: ${order.OrderId || 'N/A'} - Ngày đặt: ${order.OrderDate || 'N/A'}</h4>
-                                    <p>Trạng thái: ${order.Status || 'N/A'} | Ghi chú: ${order.Note || 'Không có'}</p>
-                                    ${order.Items && order.Items.length > 0 ? `
-                                        <div>Sản phẩm:</div>
-                                        ${order.Items.map(item => `
-                                            <div class="item-row">
-                                                ${item.ImageData ? `<img src="data:image/png;base64,${item.ImageData}" alt="Sản phẩm" class="item-img" onerror="this.style.display='none';">` : ''}
-                                                <div class="item-detail">
-                                                    <div class="item-info">
-                                                        <div class="item-field"><strong>ItemId:</strong> ${item.ItemId || 'N/A'}</div>
-                                                        <div class="item-field"><strong>Requirement:</strong> ${item.Requirement || 'Không có'}</div>
-                                                        <div class="item-field"><strong>Quantity:</strong> ${item.Quantity || 0}</div>
-                                                        <div class="item-field"><strong>Note:</strong> ${item.Note || 'Không có'}</div>
-                                                    </div>
-                                                </div>
+                                    <div class="item-row">
+                                        ${order.ImageData ? `<img src="data:image/png;base64,${order.ImageData}" alt="Sản phẩm" class="item-img" onerror="this.style.display='none';">` : ''}
+                                        <div class="item-detail">
+                                            <div class="item-info">
+                                                <div class="item-field"><strong>ItemId:</strong> ${order.ItemId || 'N/A'}</div>
+                                                <div class="item-field"><strong>Requirement:</strong> ${order.Requirement || 'Không có'}</div>
+                                                <div class="item-field"><strong>Quantity:</strong> ${order.Quantity || 0}</div>
+                                                <div class="item-field"><strong>Note:</strong> ${order.Note || 'Không có'}</div>
                                             </div>
-                                        `).join('')}
-                                    ` : '<p>Chưa có sản phẩm trong đơn này.</p>'}
+                                        </div>
+                                    </div>
                                 </div>
                             `;
                         });
