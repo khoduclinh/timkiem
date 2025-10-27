@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ĐỨC LINH STORE - Tra cứu đơn hàng main</title>
+    <title>ĐỨC LINH STORE - Tra cứu đơn hàng</title>
     <style>
         img {
             border-radius: 50%;
@@ -279,15 +279,12 @@
                 return;
             }
 
-            // Chuẩn hóa số điện thoại (loại bỏ dấu cách, *, v.v.)
-            const phone = phoneInput.replace(/[\s*]/g, '');
-
             const resultDiv = document.getElementById('result');
             const customerInfoDiv = document.getElementById('customer-info');
             const ordersDiv = document.getElementById('orders');
 
-            // Fetch từ GitHub raw URL
-            const url = `https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/${phone}.json`;
+            // Sử dụng trực tiếp phoneInput làm tên file .json
+            const url = `https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/${phoneInput}.json`;
             fetch(url)
                 .then(response => {
                     if (!response.ok) {
@@ -298,12 +295,6 @@
                 .then(data => {
                     const customer = data.Customer;
                     const orders = data.Orders || [];
-
-                    // Kiểm tra khớp số điện thoại (chuẩn hóa PhoneNumber trong JSON)
-                    const jsonPhone = (customer.PhoneNumber || '').replace(/[\s*]/g, '');
-                    if (jsonPhone !== phone) {
-                        throw new Error('Số điện thoại không khớp');
-                    }
 
                     // Hiển thị thông tin khách hàng
                     const avatarSrc = customer.AvatarData ? `data:image/png;base64,${customer.AvatarData}` : 'https://via.placeholder.com/100?text=No+Avatar';
