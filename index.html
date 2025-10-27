@@ -286,8 +286,9 @@
             const customerInfoDiv = document.getElementById('customer-info');
             const ordersDiv = document.getElementById('orders');
 
-            // Fetch file JSON tương ứng với số điện thoại
-            fetch(`${phone}.json`)
+            // Fetch từ GitHub raw URL
+            const url = `https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/${phone}.json`;
+            fetch(url)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Không tìm thấy file');
