@@ -27,59 +27,47 @@
             50% { opacity: 0.5; }
         }
 
-        /* Hiệu ứng ánh sáng vòng xoáy RGB quanh logo */
+       /* Hiệu ứng ánh sáng neon quanh logo */
         .logo {
             position: relative;
             border-radius: 50%;
             display: block;
             margin: 0 auto 20px;
             animation: fadeIn 1s ease-in-out;
+            box-shadow: 
+                0 0 5px rgba(0, 255, 255, 0.8),
+                0 0 10px rgba(0, 255, 255, 0.6),
+                0 0 15px rgba(0, 255, 255, 0.4),
+                0 0 20px rgba(0, 255, 255, 0.3),
+                0 0 30px rgba(0, 255, 255, 0.2),
+                0 0 40px rgba(0, 255, 255, 0.1),
+                inset 0 0 10px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            box-shadow: 
+                0 0 10px rgba(0, 255, 255, 1),
+                0 0 20px rgba(0, 255, 255, 0.8),
+                0 0 30px rgba(0, 255, 255, 0.6),
+                0 0 40px rgba(0, 255, 255, 0.4),
+                0 0 50px rgba(0, 255, 255, 0.3),
+                0 0 60px rgba(0, 255, 255, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
         }
 
         .logo::before {
             content: '';
             position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
             border-radius: 50%;
-            background: conic-gradient(
-                from 0deg,
-                #ff0000, /* Red */
-                #00ff00, /* Green */
-                #0000ff, /* Blue */
-                #ff0000 /* Red - loop */
-            );
-            opacity: 0.6;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
             z-index: -1;
-            animation: spin 3s linear infinite;
-            filter: blur(10px); /* Tạo hiệu ứng ánh sáng mờ */
-            box-shadow: 
-                0 0 20px rgba(255, 0, 0, 0.5),
-                0 0 30px rgba(0, 255, 0, 0.5),
-                0 0 40px rgba(0, 0, 255, 0.5);
-        }
-
-        .logo::after {
-            content: '';
-            position: absolute;
-            top: -30px;
-            left: -30px;
-            right: -30px;
-            bottom: -30px;
-            border-radius: 50%;
-            background: conic-gradient(
-                from 180deg,
-                #ff0000,
-                #00ff00,
-                #0000ff,
-                #ff0000
-            );
-            opacity: 0.4;
-            z-index: -2;
-            animation: spin 4s linear reverse infinite; /* Xoay ngược để tạo hiệu ứng xoáy */
-            filter: blur(15px);
+            animation: pulse 2s ease-in-out infinite alternate;
         }
 
         img {
