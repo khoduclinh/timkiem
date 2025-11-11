@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ĐỨC LINH STORE - Tra cứu đơn hàng</title>
-    <style>
+ <style>
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -27,14 +27,11 @@
             50% { opacity: 0.5; }
         }
 
-     /* Hiệu ứng ánh sáng neon đa màu quanh logo */
-        :root {
+        /* Hiệu ứng ánh sáng neon quanh logo */
+        .logo {
             --neon-r: 0;
             --neon-g: 255;
             --neon-b: 255;
-        }
-
-        .logo {
             position: relative;
             border-radius: 50%;
             display: block;
@@ -74,6 +71,7 @@
             z-index: -1;
             animation: pulse 2s ease-in-out infinite alternate;
         }
+
         img {
             border-radius: 50%;
         }
