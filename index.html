@@ -27,34 +27,36 @@
             50% { opacity: 0.5; }
         }
 
-       /* Hiệu ứng ánh sáng neon quanh logo */
+     /* Hiệu ứng ánh sáng neon quanh logo */
         .logo {
+            --neon-r: 0;
+            --neon-g: 255;
+            --neon-b: 255;
             position: relative;
             border-radius: 50%;
             display: block;
             margin: 0 auto 20px;
             animation: fadeIn 1s ease-in-out;
             box-shadow: 
-                0 0 5px rgba(0, 255, 255, 0.8),
-                0 0 10px rgba(0, 255, 255, 0.6),
-                0 0 15px rgba(0, 255, 255, 0.4),
-                0 0 20px rgba(0, 255, 255, 0.3),
-                0 0 30px rgba(0, 255, 255, 0.2),
-                0 0 40px rgba(0, 255, 255, 0.1),
+                0 0 5px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.8),
+                0 0 10px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.6),
+                0 0 15px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.4),
+                0 0 20px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.3),
+                0 0 30px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.2),
+                0 0 40px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.1),
                 inset 0 0 10px rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
         }
 
         .logo:hover {
             box-shadow: 
-                0 0 10px rgba(0, 255, 255, 1),
-                0 0 20px rgba(0, 255, 255, 0.8),
-                0 0 30px rgba(0, 255, 255, 0.6),
-                0 0 40px rgba(0, 255, 255, 0.4),
-                0 0 50px rgba(0, 255, 255, 0.3),
-                0 0 60px rgba(0, 255, 255, 0.2),
+                0 0 10px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 1),
+                0 0 20px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.8),
+                0 0 30px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.6),
+                0 0 40px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.4),
+                0 0 50px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.3),
+                0 0 60px rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.2),
                 inset 0 0 20px rgba(255, 255, 255, 0.4);
-            transform: scale(1.05);
         }
 
         .logo::before {
@@ -65,11 +67,10 @@
             right: -10px;
             bottom: -10px;
             border-radius: 50%;
-            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            background: linear-gradient(45deg, transparent, rgba(var(--neon-r), var(--neon-g), var(--neon-b), 0.1), transparent);
             z-index: -1;
             animation: pulse 2s ease-in-out infinite alternate;
         }
-
         img {
             border-radius: 50%;
         }
