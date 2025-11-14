@@ -361,69 +361,6 @@
             font-weight: bold;
             margin: 0 5px;
         }
-        /* CSS cho modal QR Code */
-        .qr-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        .qr-modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            position: relative;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .qr-modal-content h2 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .qr-modal-content img {
-            max-width: 100%;
-            height: auto;
-            border: 2px solid #007bff;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .qr-download-btn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
-            transition: background-color 0.3s ease;
-        }
-        .qr-download-btn:hover {
-            background-color: #218838;
-        }
-        .close-modal {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            right: 15px;
-            top: 10px;
-        }
-        .close-modal:hover {
-            color: #000;
-        }
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -512,10 +449,6 @@
             .phone-divider {
                 margin: 0 3px;
             }
-            .qr-modal-content {
-                margin: 20% auto;
-                padding: 20px;
-            }
         }
         @media (max-width: 480px) {
             .header h1 {
@@ -565,13 +498,12 @@
 <body>
     <div class="container">
         <div class="header">
- <!-- Thẻ <img> với ID để JS có thể truy cập -->
-    <img id="logoImg" src="https://via.placeholder.com/250?text=Loading..." alt="Logo" style="width: 250px; height: auto; border-radius: 50%;"/>
+            <img alt="" src="https://via.placeholder.com/250?text=Loading+Logo..." class="logo" id="logo" />
             <div class="nav-buttons">
                 <a href="https://khoduclinh.github.io/timkiem" class="nav-btn"><i class="fa fa-search"></i>TÌM KIẾM</a>
                 <a href="#" class="nav-btn"><i class="fa fa-shopping-bag"></i>CỬA HÀNG</a>
                 <a href="zalo://conversation?phone=0934366766" class="nav-btn"><i class="fa fa-th-large"></i>TÌM THEO MẪU</a>
-                <a href="#" class="nav-btn" onclick="hienThiQRThanhToan()"><i class="fa fa-credit-card"></i>THANH TOÁN</a>
+                <a href="#" class="nav-btn"><i class="fa fa-credit-card"></i>THANH TOÁN</a>
             </div>
         </div>
 
@@ -600,69 +532,23 @@
         </div>
     </div>
 
-    <!-- Modal QR Code Thanh Toán -->
-    <div id="qrModal" class="qr-modal">
-        <div class="qr-modal-content">
-            <span class="close-modal" onclick="dongModalQR()">&times;</span>
-            <h2>Quét mã QR để chuyển khoản</h2>
-            <img id="qrImage" src="" alt="QR Code Thanh Toán" style="display: none;">
-            <a id="qrDownload" href="" download="qr_thanh_toan.png" class="qr-download-btn" style="display: none;">
-                <i class="fa fa-download"></i> Tải xuống QR
-            </a>
-        </div>
-    </div>
-
     <script>
-        // Tải logo từ logo.json khi trang load
-window.addEventListener('load', function() {
-    const img = document.getElementById('logoImg');  // Đảm bảo ID này khớp với <img id="logoImg">
-    const url = 'https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.json';
-    
-    fetch(url)
-        .then(response => {
-            console.log('Response status:', response.status);  // Debug: 200 = OK
-            console.log('Response text preview:', response.headers.get('content-type'));  // Kiểm tra type (nên là application/json)
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: Không tải được file`);
-            }
-            return response.text();  // Đọc as text trước để debug (sau parse nếu cần)
-        })
-        .then(textContent => {
-            console.log('Raw file content (first 200 chars):', textContent.substring(0, 200));  // Debug: Xem nội dung thô
-            
-            // Thử parse JSON
-            let data;
-            try {
-                data = JSON.parse(textContent);
-                console.log('Parsed JSON:', data);  // Debug: Cấu trúc JSON
-                console.log('JSON keys:', Object.keys(data));  // Các trường có sẵn
-            } catch (parseError) {
-                console.error('Parse JSON fail:', parseError);
-                throw new Error('File không phải JSON hợp lệ (có thể là text rỗng)');
-            }
-            
-            // Trích xuất base64 (thử nhiều tên trường)
-            let base64Data = data.logoBase64 || data.logo || data.image || data.base64Data || null;
-            console.log('Extracted base64:', base64Data ? base64Data.substring(0, 50) + '...' : 'Not found');
-            
-            if (base64Data && (base64Data.startsWith('data:image') || base64Data.includes('base64'))) {
-                img.src = base64Data;
-                img.alt = 'Logo Đức Linh Store';
-                console.log('Logo loaded from JSON!');
-            } else {
-                // Fallback: Hardcode base64 từ HTML gốc (nếu JSON fail)
-                console.log('Fallback to hardcoded base64');
-                img.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYanhsIARAAABtbnRyUkdCIFhZWiAH4wAMAAEAAAAAAABhY3NwQVBQTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLWp4bCACufkBQHM6b/D/A/Tw9worAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtkZXNjAAABCAAAAERjcHJ0AAABTAAAACR3dHB0AAABcAAAABRjaGFkAAABhAAAACxja...';  // Paste full base64 ở đây
-                img.alt = 'Logo (Fallback)';
-            }
-        })
-        .catch(error => {
-            console.error('Full error:', error);
-            // Fallback an toàn
-            img.src = 'https://via.placeholder.com/250x250/007bff/ffffff?text=Logo+Error';  // Placeholder xanh
-            img.alt = 'Lỗi tải logo - Kiểm tra file JSON';
-        });
-});
+        // Tải và hiển thị logo từ file base64
+        fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.base64')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Không thể tải logo');
+                }
+                return response.text();
+            })
+            .then(base64 => {
+                const logo = document.getElementById('logo');
+                logo.src = 'data:image/jpeg;base64,' + base64.trim();
+            })
+            .catch(error => {
+                console.error('Lỗi tải logo:', error);
+                // Giữ placeholder nếu lỗi
+            });
 
         function timKiemKhachHang() {
             const phoneInput = document.getElementById('NhapSoDienThoai').value.trim();
@@ -756,59 +642,6 @@ window.addEventListener('load', function() {
                 timKiemKhachHang();
             }
         });
-
-        // Hàm hiển thị QR thanh toán
-        function hienThiQRThanhToan() {
-            const modal = document.getElementById('qrModal');
-            const qrImage = document.getElementById('qrImage');
-            const qrDownload = document.getElementById('qrDownload');
-
-            // Hiển thị modal
-            modal.style.display = 'block';
-
-            // Fetch dữ liệu từ payment.json
-            fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Không tìm thấy file QR');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Giả sử JSON có trường 'qrCodeBase64' chứa base64 của QR
-                    const qrBase64 = data.qrCodeBase64; // Thay đổi tên trường nếu khác
-                    if (qrBase64) {
-                        const qrSrc = `data:image/png;base64,${qrBase64}`;
-                        qrImage.src = qrSrc;
-                        qrImage.style.display = 'block';
-                        qrDownload.href = qrSrc;
-                        qrDownload.style.display = 'inline-block';
-                    } else {
-                        qrImage.style.display = 'none';
-                        qrDownload.style.display = 'none';
-                        alert('Không tìm thấy QR code trong dữ liệu.');
-                    }
-                })
-                .catch(error => {
-                    qrImage.style.display = 'none';
-                    qrDownload.style.display = 'none';
-                    console.error('Lỗi tải QR:', error);
-                    alert('Lỗi khi tải QR code thanh toán.');
-                });
-        }
-
-        // Hàm đóng modal QR
-        function dongModalQR() {
-            document.getElementById('qrModal').style.display = 'none';
-        }
-
-        // Đóng modal khi click bên ngoài
-        window.onclick = function(event) {
-            const modal = document.getElementById('qrModal');
-            if (event.target === modal) {
-                dongModalQR();
-            }
-        }
     </script>
 </body>
 </html>
