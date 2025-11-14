@@ -622,13 +622,12 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Giả sử JSON có trường 'logoBase64' chứa base64 của logo
-                    const logoBase64 = data.logoBase64; // Thay đổi tên trường nếu khác
-                    if (logoBase64) {
-                        const logoSrc = `${logoBase64}`; // Điều chỉnh type nếu cần
+                    // Giả sử JSON có trường 'logoBase64' chứa full data URI bắt đầu bằng data:image/jpeg;base64,...
+                    const logoSrc = data.logoBase64; // Thay đổi tên trường nếu khác
+                    if (logoSrc && logoSrc.startsWith('data:image')) {
                         document.getElementById('logo').src = logoSrc;
                     } else {
-                        console.error('Không tìm thấy base64 trong dữ liệu logo.');
+                        console.error('Không tìm thấy data URI hợp lệ trong dữ liệu logo.');
                     }
                 })
                 .catch(error => {
@@ -750,7 +749,7 @@
                     // Giả sử JSON có trường 'qrCodeBase64' chứa base64 của QR
                     const qrBase64 = data.qrCodeBase64; // Thay đổi tên trường nếu khác
                     if (qrBase64) {
-                        const qrSrc = `${qrBase64}`;
+                        const qrSrc = `data:image/png;base64,${qrBase64}`;
                         qrImage.src = qrSrc;
                         qrImage.style.display = 'block';
                         qrDownload.href = qrSrc;
