@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ĐỨC LINH STORE - Tra cứu đơn hàng</title>
-    <style>
+   <style>
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -72,7 +72,7 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin: 20px 0; /* Giảm margin từ 40px xuống 20px để khoảng cách nhỏ hơn */
+            margin: 10px 0; /* Giảm margin để gần hơn với search-form */
             flex-wrap: wrap;
         }
 
@@ -121,7 +121,7 @@
         }
         .header { 
             text-align: center; 
-            margin-bottom: 20px; /* Giảm margin-bottom từ 40px xuống 20px để khoảng cách đến search-form nhỏ hơn */
+            margin-bottom: 0; /* Đặt margin-bottom = 0 để nav-buttons sát với search-form */
             padding: 20px 0;
         }
         .logo { 
@@ -140,6 +140,7 @@
         }
         .search-form { 
             text-align: center; 
+            margin-top: 0; /* Đặt margin-top = 0 để sát với nav-buttons */
             margin-bottom: 40px;
             background: white;
             padding: 20px; /* Giảm padding từ 30px xuống 20px để form gọn hơn */
@@ -340,7 +341,7 @@
             }
             .nav-buttons {
                 gap: 10px;
-                margin: 15px 0; /* Giảm margin trên mobile để cân bằng */
+                margin: 10px 0; /* Giảm margin trên mobile để cân bằng */
             }
             .nav-btn {
                 padding: 10px 15px;
@@ -355,6 +356,7 @@
                 align-items: center;
                 justify-content: center;
                 gap: 8px; /* Giảm gap trên mobile để layout ngang gọn gàng hơn */
+                margin-top: 0; /* Đảm bảo sát với nav-buttons trên mobile */
             }
             .search-form h1 {
                 display: none; /* Ẩn h1 trên mobile để tiết kiệm không gian, vì tiêu đề đã có ở header */
@@ -378,7 +380,7 @@
                 width: 120px;
             }
             .header {
-                margin-bottom: 10px; /* Giảm thêm trên mobile */
+                margin-bottom: 0; /* Đảm bảo header sát với nav-buttons */
             }
             .result {
                 padding: 20px;
@@ -422,7 +424,7 @@
                 flex-direction: column;
                 align-items: center;
                 gap: 10px;
-                margin: 15px 0; /* Điều chỉnh margin trên mobile nhỏ */
+                margin: 10px 0; /* Điều chỉnh margin trên mobile nhỏ */
             }
             .nav-btn {
                 width: 100%;
@@ -432,6 +434,7 @@
                 flex-direction: column;
                 gap: 10px; /* Giữ gap hợp lý cho layout dọc */
                 padding: 20px; /* Tăng nhẹ padding cho mobile nhỏ để dễ chạm */
+                margin-top: 0; /* Đảm bảo sát với nav-buttons */
             }
             .search-form input[type="text"] {
                 max-width: none;
@@ -443,7 +446,7 @@
                 flex: none;
             }
             .header {
-                margin-bottom: 10px; /* Giảm thêm trên mobile nhỏ */
+                margin-bottom: 0; /* Đảm bảo header sát với nav-buttons */
             }
         }
     </style>
