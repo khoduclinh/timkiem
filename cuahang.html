@@ -286,7 +286,7 @@
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
 
@@ -312,10 +312,21 @@
             margin-bottom: 10px;
         }
 
-        .product-mota {
-            font-size: 14px;
+        .product-description {
+            font-size: 12px;
             color: #555;
             line-height: 1.4;
+            margin-bottom: 8px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 5px;
+            text-align: center;
         }
 
         .no-result {
@@ -432,6 +443,10 @@
 
             .product-img {
                 height: 120px;
+            }
+
+            .product-description {
+                font-size: 11px;
             }
 
             .phone-container {
@@ -661,19 +676,21 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Filter dựa trên Mota chứa query
+                    // Filter dựa trên Description chứa query
                     const filtered = data.filter(item => 
-                        item.Mota && item.Mota.toLowerCase().includes(query)
+                        item.Description && item.Description.toLowerCase().includes(query)
                     );
 
                     if (filtered.length > 0) {
                         let html = '';
                         filtered.forEach(item => {
-                            const imgSrc = item.Anh ? `data:image/png;base64,${item.Anh}` : 'https://via.placeholder.com/200?text=No+Image';
+                            const imgSrc = item.ImageData ? `data:image/png;base64,${item.ImageData}` : 'https://via.placeholder.com/200?text=No+Image';
+                            const price = item.UnitPrice ? item.UnitPrice.toLocaleString('vi-VN') + ' VNĐ' : 'Chưa có giá';
                             html += `
                                 <div class="product-item">
                                     <img src="${imgSrc}" alt="Sản phẩm" class="product-img" onerror="this.src='https://via.placeholder.com/200?text=No+Image';">
-                                    <div class="product-mota">${item.Mota || 'Chưa có mô tả'}</div>
+                                    <div class="product-description">${item.Description || 'Chưa có mô tả'}</div>
+                                    <div class="product-price">Giá: ${price}</div>
                                 </div>
                             `;
                         });
