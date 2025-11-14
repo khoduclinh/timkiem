@@ -741,8 +741,8 @@
                         qrBase64 = base64.trim();
                         const qrImg = document.getElementById('qrImg');
                         const downloadBtn = document.getElementById('downloadBtn');
-                        qrImg.src = `data:image/png;base64,${qrBase64}`;
-                        downloadBtn.href = `data:image/png;base64,${qrBase64}`;
+                        qrImg.src = `${qrBase64}`;
+                        downloadBtn.href = `${qrBase64}`;
                         loadingText.innerHTML = 'Quét mã QR để chuyển khoản';
                     })
                     .catch(error => {
