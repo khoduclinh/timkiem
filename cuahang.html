@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ĐỨC LINH STORE - Cửa hàng</title>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Hiệu ứng RGB đuổi cho border (chasing effect) */
+        @keyframes rgbChase {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* CSS cho navigation buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: #0056b3;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn.active {
+            background-color: #28a745;
+        }
+
+        .nav-btn i {
+            font-size: 16px;
+        }
+
+        img {
+            border-radius: 50%;
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; 
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header { 
+            text-align: center; 
+            margin-bottom: 0;
+            padding: 20px 0;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 20px;
+            animation: fadeIn 1s ease-in-out;
+            border: 2px solid transparent;
+        }
+
+        .logo {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 0 0 1.5px white;
+        }
+
+        .logo-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: calc(100% + 10px);
+            height: calc(100% + 10px);
+            border-radius: 50%;
+            background: conic-gradient(
+                #ff0000 0deg 120deg,
+                #00ff00 120deg 240deg,
+                #0000ff 240deg 360deg
+            );
+            z-index: -1;
+            animation: rgbChase 5s linear infinite;
+            filter: blur(8px);
+            opacity: 0.6;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.4), 0 0 60px rgba(0, 255, 0, 0.4), 0 0 80px rgba(0, 0, 255, 0.4);
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        /* CSS cho expander bars (sử dụng details/summary) */
+        .expander-section {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .expander-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .expander-header:hover {
+            background-color: #0056b3;
+        }
+
+        .expander-header i {
+            font-size: 20px;
+        }
+
+        .expander-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .expander-content.open {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .search-form-expander {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-form-expander h2 {
+            margin: 0 0 8px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .search-form-expander input[type="text"] { 
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .search-form-expander input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+            transform: scale(1.02);
+        }
+
+        .search-form-expander button { 
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .search-form-expander button:hover:not(:disabled) { 
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .search-form-expander button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            animation: pulse 1.5s infinite;
+        }
+
+        .loading-expander {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+            color: #007bff;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-expander.show {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .loading-expander i {
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .results-section h3 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .product-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .product-mota {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .no-result {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .footer-banner {
+            background: white;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .footer-banner strong {
+            display: block;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .footer-banner i {
+            margin-right: 10px;
+            color: #007bff;
+        }
+
+        .footer-banner div {
+            margin: 5px 0;
+        }
+
+        .phone-link {
+            color: #007bff;
+            text-decoration: none;
+            white-space: nowrap;
+            font-weight: bold;
+        }
+
+        .phone-link:hover {
+            text-decoration: underline;
+        }
+
+        .phone-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: nowrap;
+            margin: 5px 0;
+        }
+
+        .phone-line {
+            white-space: nowrap;
+        }
+
+        .phone-divider {
+            color: #333;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .nav-buttons {
+                gap: 10px;
+                margin: 10px 0;
+            }
+
+            .nav-btn {
+                padding: 10px 15px;
+                font-size: 13px;
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .logo-wrapper {
+                width: 120px;
+                height: 120px;
+            }
+
+            .logo-wrapper::before {
+                top: -3px;
+                left: -3px;
+                width: calc(100% + 6px);
+                height: calc(100% + 6px);
+            }
+
+            .expander-header {
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+
+            .expander-content {
+                padding: 15px;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .product-img {
+                height: 120px;
+            }
+
+            .phone-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+                font-size: 0.85em;
+            }
+
+            .phone-divider {
+                margin: 0 3px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .logo-wrapper {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo-wrapper::before {
+                top: -2px;
+                left: -2px;
+                width: calc(100% + 4px);
+                height: calc(100% + 4px);
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                margin: 10px 0;
+            }
+
+            .nav-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .search-form-expander {
+                gap: 10px;
+            }
+
+            .search-form-expander input[type="text"] {
+                max-width: none;
+            }
+
+            .search-form-expander button {
+                max-width: none;
+                width: 100%;
+            }
+
+            .phone-container {
+                font-size: 0.8em;
+                gap: 5px;
+            }
+
+            .phone-divider {
+                margin: 0 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-wrapper">
+                <img alt="" src="https://via.placeholder.com/250?text=Loading+Logo..." class="logo" id="logo" />
+            </div>
+            <div class="nav-buttons">
+                <a href="https://khoduclinh.github.io/timkiem" class="nav-btn"><i class="fa fa-search"></i>TÌM KIẾM</a>
+                <a href="#" class="nav-btn active"><i class="fa fa-shopping-bag"></i>CỬA HÀNG</a>
+                <a href="zalo://conversation?phone=0934366766" class="nav-btn"><i class="fa fa-th-large"></i>TÌM THEO MẪU</a>
+                <a href="javascript:void(0);" class="nav-btn" id="paymentBtn"><i class="fa fa-credit-card"></i>THANH TOÁN</a>
+            </div>
+        </div>
+
+        <!-- Expander Bar 1: QUẦN ÁO -->
+        <div class="expander-section">
+            <div class="expander-header" onclick="toggleExpander('quanao')">
+                <i class="fa-solid fa-shirt"></i> QUẦN ÁO - Tìm kiếm theo cân nặng
+            </div>
+            <div id="quanao-content" class="expander-content">
+                <div class="search-form-expander">
+                    <h2>Tìm kiếm QUẦN ÁO theo cân nặng (kg)</h2>
+                    <input type="text" id="quanao-input" placeholder="Nhập cân nặng (ví dụ: 60)">
+                    <div id="loading-quanao" class="loading-expander">
+                        <i class="fa fa-spinner fa-spin"></i> Đang tìm kiếm...
+                    </div>
+                    <button id="search-quanao" onclick="searchProducts('quanao')">Tìm Kiếm</button>
+                </div>
+                <div id="results-quanao" class="results-section">
+                    <h3>Kết quả tìm kiếm:</h3>
+                    <div id="quanao-products" class="product-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expander Bar 2: GIẦY DÉP -->
+        <div class="expander-section">
+            <div class="expander-header" onclick="toggleExpander('giaydep')">
+                <i class="fa fa-shoe-prints"></i> GIẦY DÉP - Tìm kiếm theo chiều dài chân (cm)
+            </div>
+            <div id="giaydep-content" class="expander-content">
+                <div class="search-form-expander">
+                    <h2>Tìm kiếm GIẦY DÉP theo chiều dài chân (cm)</h2>
+                    <input type="text" id="giaydep-input" placeholder="Nhập chiều dài chân (ví dụ: 25)">
+                    <div id="loading-giaydep" class="loading-expander">
+                        <i class="fa fa-spinner fa-spin"></i> Đang tìm kiếm...
+                    </div>
+                    <button id="search-giaydep" onclick="searchProducts('giaydep')">Tìm Kiếm</button>
+                </div>
+                <div id="results-giaydep" class="results-section">
+                    <h3>Kết quả tìm kiếm:</h3>
+                    <div id="giaydep-products" class="product-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expander Bar 3: SẢN PHẨM KHÁC -->
+        <div class="expander-section">
+            <div class="expander-header" onclick="toggleExpander('khac')">
+                <i class="fa fa-infinity"></i> SẢN PHẨM KHÁC - Tìm kiếm theo tên sản phẩm
+            </div>
+            <div id="khac-content" class="expander-content">
+                <div class="search-form-expander">
+                    <h2>Tìm kiếm SẢN PHẨM KHÁC theo tên</h2>
+                    <input type="text" id="khac-input" placeholder="Nhập tên sản phẩm (ví dụ: mũ)">
+                    <div id="loading-khac" class="loading-expander">
+                        <i class="fa fa-spinner fa-spin"></i> Đang tìm kiếm...
+                    </div>
+                    <button id="search-khac" onclick="searchProducts('khac')">Tìm Kiếm</button>
+                </div>
+                <div id="results-khac" class="results-section">
+                    <h3>Kết quả tìm kiếm:</h3>
+                    <div id="khac-products" class="product-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-banner">
+            <strong>ĐỨC LINH STORE</strong>
+            <div><i class="fa fa-home"></i> TDP6 - Thiên Hương - Thủy Nguyên - Hải Phòng</div>
+            <div class="phone-container">
+                <i class="fa fa-phone"></i>
+                <span class="phone-line"><a href="tel:+84934366766" class="phone-link">0934 366 766</a></span> - 
+                <span class="phone-line"><a href="tel:+840775885665" class="phone-link">0775 885 665</a></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal QR Thanh toán (giữ nguyên từ trang gốc) -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+            <h2>Quét mã QR để chuyển khoản</h2>
+            <img id="qrImg" src="" alt="QR Code Thanh toán" class="qr-img">
+            <a id="downloadBtn" class="download-btn" download="qr_thanh_toan.png">
+                <i class="fa fa-download"></i> Tải xuống QR
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Tải và hiển thị logo từ file base64 (giữ nguyên)
+        fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.base64')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Không thể tải logo');
+                }
+                return response.text();
+            })
+            .then(base64 => {
+                const logo = document.getElementById('logo');
+                logo.src = base64.trim();
+            })
+            .catch(error => {
+                console.error('Lỗi tải logo:', error);
+            });
+
+        // Toggle expander
+        function toggleExpander(id) {
+            const content = document.getElementById(id + '-content');
+            content.classList.toggle('open');
+        }
+
+        // Tìm kiếm sản phẩm
+        function searchProducts(type) {
+            const inputId = type + '-input';
+            const loadingId = 'loading-' + type;
+            const buttonId = 'search-' + type;
+            const resultsId = 'results-' + type;
+            const productsId = type + '-products';
+
+            const query = document.getElementById(inputId).value.trim().toLowerCase();
+
+            if (!query) {
+                alert('Vui lòng nhập từ khóa tìm kiếm!');
+                return;
+            }
+
+            const loadingDiv = document.getElementById(loadingId);
+            const button = document.getElementById(buttonId);
+            const resultsDiv = document.getElementById(resultsId);
+            const productsDiv = document.getElementById(productsId);
+
+            // Hiển thị loading
+            loadingDiv.classList.add('show');
+            button.disabled = true;
+            button.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tìm...';
+
+            // Map type to JSON file
+            const fileMap = {
+                'quanao': 'SANQUANAO.json',
+                'giaydep': 'SANGIAYDEP.json',
+                'khac': 'SANSANPHAMKHAC.json'
+            };
+            const url = `https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/${fileMap[type]}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Không tìm thấy file');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Filter dựa trên Mota chứa query
+                    const filtered = data.filter(item => 
+                        item.Mota && item.Mota.toLowerCase().includes(query)
+                    );
+
+                    if (filtered.length > 0) {
+                        let html = '';
+                        filtered.forEach(item => {
+                            const imgSrc = item.Anh ? `data:image/png;base64,${item.Anh}` : 'https://via.placeholder.com/200?text=No+Image';
+                            html += `
+                                <div class="product-item">
+                                    <img src="${imgSrc}" alt="Sản phẩm" class="product-img" onerror="this.src='https://via.placeholder.com/200?text=No+Image';">
+                                    <div class="product-mota">${item.Mota || 'Chưa có mô tả'}</div>
+                                </div>
+                            `;
+                        });
+                        productsDiv.innerHTML = html;
+                    } else {
+                        productsDiv.innerHTML = '<p class="no-result">Không tìm thấy sản phẩm phù hợp.</p>';
+                    }
+
+                    // Hiển thị results
+                    resultsDiv.classList.add('show');
+                })
+                .catch(error => {
+                    productsDiv.innerHTML = '<p class="no-result">Lỗi tải dữ liệu: ' + error.message + '</p>';
+                    resultsDiv.classList.add('show');
+                    console.error('Lỗi:', error);
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        loadingDiv.classList.remove('show');
+                    }, 300);
+                    button.disabled = false;
+                    button.innerHTML = 'Tìm Kiếm';
+                });
+        }
+
+        // Enter key cho các input
+        ['quanao', 'giaydep', 'khac'].forEach(type => {
+            document.getElementById(type + '-input').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    searchProducts(type);
+                }
+            });
+        });
+
+        // Xử lý nút Thanh toán (giữ nguyên từ trang gốc)
+        let qrBase64 = null;
+        document.getElementById('paymentBtn').addEventListener('click', function() {
+            if (!qrBase64) {
+                const loadingText = document.querySelector('.modal-content h2');
+                loadingText.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải QR...';
+                document.getElementById('paymentModal').classList.add('show');
+
+                fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.base64')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Không thể tải QR');
+                        }
+                        return response.text();
+                    })
+                    .then(base64 => {
+                        qrBase64 =base64.trim();
+                        const qrImg = document.getElementById('qrImg');
+                        const downloadBtn = document.getElementById('downloadBtn');
+                        qrImg.src = qrBase64;
+                        downloadBtn.href = qrBase64;
+                        loadingText.innerHTML = 'Quét mã QR để chuyển khoản';
+                    })
+                    .catch(error => {
+                        console.error('Lỗi tải QR:', error);
+                        loadingText.innerHTML = 'Lỗi tải QR, vui lòng thử lại!';
+                        setTimeout(closePaymentModal, 2000);
+                    });
+            } else {
+                document.getElementById('paymentModal').classList.add('show');
+            }
+        });
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target === modal) {
+                closePaymentModal();
+            }
+        }
+
+        // CSS cho modal (thêm từ trang gốc)
+        const modalStyle = document.createElement('style');
+        modalStyle.textContent = `
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                animation: fadeIn 0.3s ease-in-out;
+            }
+            .modal.show {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal-content {
+                background-color: white;
+                padding: 30px;
+                border-radius: 10px;
+                text-align: center;
+                max-width: 400px;
+                width: 90%;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                animation: fadeIn 0.4s ease-in-out;
+                position: relative;
+            }
+            .close-modal {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
+                cursor: pointer;
+                color: #aaa;
+                transition: color 0.3s ease;
+            }
+            .close-modal:hover {
+                color: #333;
+            }
+            .qr-img {
+                width: 300px;
+                height: 300px;
+                margin: 0 auto 20px;
+                border: 2px solid #007bff;
+                border-radius: 10px;
+            }
+            .download-btn {
+                padding: 12px 25px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                text-decoration: none;
+                display: block;
+                width: 300px;
+                margin: 0 auto;
+                transition: all 0.3s ease;
+            }
+            .download-btn:hover {
+                background-color: #218838;
+                transform: translateY(-1px);
+            }
+            @media (max-width: 600px) {
+                .modal-content {
+                    padding: 20px;
+                    margin: 20px;
+                }
+                .qr-img {
+                    width: 225px;
+                    height: 225px;
+                }
+                .download-btn {
+                    width: 225px;
+                    padding: 10px 20px;
+                    font-size: 14px;
+                }
+            }
+        `;
+        document.head.appendChild(modalStyle);
+    </script>
+</body>
+</html>
