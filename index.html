@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ĐỨC LINH STORE - Tra cứu đơn hàng</title>
-   <style>
+  <style>
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -335,6 +335,25 @@
         .footer-banner div {
             margin: 5px 0;
         }
+        /* CSS cho phone numbers để hiển thị đúng trên mobile và clickable */
+        .phone-link {
+            color: #007bff;
+            text-decoration: none;
+            white-space: nowrap; /* Ngăn việc tách dòng */
+        }
+        .phone-link:hover {
+            text-decoration: underline;
+        }
+        .phone-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .phone-line {
+            white-space: nowrap;
+        }
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -412,6 +431,15 @@
             .footer-banner strong {
                 font-size: 1.3em;
             }
+            /* Trên mobile, hiển thị phone numbers trên một dòng hoặc tách đúng cách */
+            .phone-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+            .phone-line {
+                white-space: nowrap;
+            }
         }
         @media (max-width: 480px) {
             .header h1 {
@@ -448,6 +476,12 @@
             .header {
                 margin-bottom: 0; /* Đảm bảo header sát với nav-buttons */
             }
+            .phone-container {
+                gap: 3px;
+            }
+            .phone-line {
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -480,7 +514,11 @@
         <div class="footer-banner">
             <strong>ĐỨC LINH STORE</strong>
             <div><i class="fa fa-home"></i> TDP6 - Thiên Hương - Thủy Nguyên - Hải Phòng</div>
-            <div><i class="fa fa-phone"></i> 0934 366 766 - 0775 885 665</div>
+         <div class="phone-container">
+    <i class="fa fa-phone"></i>
+    <span class="phone-line"><a href="tel:+84934366766" class="phone-link">0934 366 766</a></span> - 
+    <span class="phone-line"><a href="tel:+840775885665" class="phone-link">0775 885 665</a></span>
+</div>
         </div>
     </div>
 
