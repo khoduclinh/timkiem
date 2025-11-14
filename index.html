@@ -72,7 +72,7 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin: 20px 0;
+            margin: 20px 0; /* Giảm margin từ 40px xuống 20px để khoảng cách nhỏ hơn */
             flex-wrap: wrap;
         }
 
@@ -121,7 +121,7 @@
         }
         .header { 
             text-align: center; 
-            margin-bottom: 40px;
+            margin-bottom: 20px; /* Giảm margin-bottom từ 40px xuống 20px để khoảng cách đến search-form nhỏ hơn */
             padding: 20px 0;
         }
         .logo { 
@@ -129,7 +129,7 @@
             height: auto; 
             border-radius: 50%; 
             display: block;
-            margin: 0 auto 20px;
+            margin: 0 auto 20px; /* Giảm margin-bottom từ 40px xuống 20px để khoảng cách từ logo đến buttons nhỏ hơn */
             animation: fadeIn 1s ease-in-out, rgbGlow 5s linear infinite;
             border: 2px solid transparent; /* Để hỗ trợ inset shadow */
         }
@@ -142,12 +142,16 @@
             text-align: center; 
             margin-bottom: 40px;
             background: white;
-            padding: 30px;
+            padding: 20px; /* Giảm padding từ 30px xuống 20px để form gọn hơn */
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px; /* Tăng nhẹ gap từ 10px lên 12px để khoảng cách giữa các phần tử hợp lý hơn, nhưng không quá rộng */
+        }
+        .search-form h1 { /* Thêm style cho h1 trong search-form để căn chỉnh tốt hơn */
+            margin: 0 0 8px 0; /* Giảm margin-bottom của h1 để tổng thể gọn gàng */
+            font-size: 1.8em; /* Giảm nhẹ font-size cho h1 để phù hợp hơn với layout */
         }
         .search-form input[type="text"] { 
             padding: 12px;
@@ -336,7 +340,7 @@
             }
             .nav-buttons {
                 gap: 10px;
-                margin: 15px 0;
+                margin: 15px 0; /* Giảm margin trên mobile để cân bằng */
             }
             .nav-btn {
                 padding: 10px 15px;
@@ -346,11 +350,14 @@
                 justify-content: center;
             }
             .search-form {
-                padding: 20px;
+                padding: 15px; /* Giảm padding trên mobile từ 20px xuống 15px để gọn hơn */
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 10px;
+                gap: 8px; /* Giảm gap trên mobile để layout ngang gọn gàng hơn */
+            }
+            .search-form h1 {
+                display: none; /* Ẩn h1 trên mobile để tiết kiệm không gian, vì tiêu đề đã có ở header */
             }
             .search-form input[type="text"] {
                 max-width: 200px;
@@ -369,6 +376,9 @@
             }
             .logo {
                 width: 120px;
+            }
+            .header {
+                margin-bottom: 10px; /* Giảm thêm trên mobile */
             }
             .result {
                 padding: 20px;
@@ -412,6 +422,7 @@
                 flex-direction: column;
                 align-items: center;
                 gap: 10px;
+                margin: 15px 0; /* Điều chỉnh margin trên mobile nhỏ */
             }
             .nav-btn {
                 width: 100%;
@@ -419,7 +430,8 @@
             }
             .search-form {
                 flex-direction: column;
-                gap: 10px;
+                gap: 10px; /* Giữ gap hợp lý cho layout dọc */
+                padding: 20px; /* Tăng nhẹ padding cho mobile nhỏ để dễ chạm */
             }
             .search-form input[type="text"] {
                 max-width: none;
@@ -429,6 +441,9 @@
                 max-width: none;
                 width: 100%;
                 flex: none;
+            }
+            .header {
+                margin-bottom: 10px; /* Giảm thêm trên mobile nhỏ */
             }
         }
     </style>
@@ -440,7 +455,7 @@
             <div class="nav-buttons">
                 <a href="https://khoduclinh.github.io/timkiem" class="nav-btn"><i class="fa fa-search"></i>TÌM KIẾM</a>
                 <a href="#" class="nav-btn"><i class="fa fa-shopping-bag"></i>CỬA HÀNG</a>
-                <a href="#" class="nav-btn"><i class="fa fa-th-large"></i>TÌM THEO MẪU</a>
+                <a href="zalo://conversation?phone=0934366766" class="nav-btn"><i class="fa fa-th-large"></i>TÌM THEO MẪU</a>
                 <a href="#" class="nav-btn"><i class="fa fa-credit-card"></i>THANH TOÁN</a>
             </div>
         </div>
