@@ -726,7 +726,7 @@
                     // Giả sử JSON có trường 'qrCodeBase64' chứa base64 của QR
                     const qrBase64 = data.qrCodeBase64; // Thay đổi tên trường nếu khác
                     if (qrBase64) {
-                        const qrSrc = `data:image/png;base64,${qrBase64}`;
+                        const qrSrc = `{qrBase64}`;
                         qrImage.src = qrSrc;
                         qrImage.style.display = 'block';
                         qrDownload.href = qrSrc;
