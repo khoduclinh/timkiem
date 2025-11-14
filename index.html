@@ -47,28 +47,16 @@
         .logo::before {
             content: '';
             position: absolute;
-            inset: -2px;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            z-index: -1;
             border-radius: inherit;
-            padding: 2px;
-            background: conic-gradient(
-                from 0,
-                transparent 0deg,
-                hsl(0 100% 50%) 0deg,
-                hsl(0 100% 50%) 10deg,
-                transparent 10deg,
-                transparent 360deg
-            );
-            mask: radial-gradient(farthest-side, transparent calc(99% - 2px), black 95%);
-            -webkit-mask: radial-gradient(farthest-side, transparent calc(99% - 2px), black 95%);
-            animation: rotate 3s linear infinite, hue-rotate 3s linear infinite;
-            filter: hue-rotate(0deg);
-        }
-
-        @keyframes hue-rotate {
-            0% { filter: hue-rotate(0deg); }
-            33% { filter: hue-rotate(120deg); }
-            66% { filter: hue-rotate(240deg); }
-            100% { filter: hue-rotate(360deg); }
+            background: conic-gradient(from 0deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0000);
+            mask: radial-gradient(circle closest-side, transparent 85%, black 100%);
+            -webkit-mask: radial-gradient(circle closest-side, transparent 85%, black 100%);
+            animation: rotate 3s linear infinite;
         }
 
         /* CSS cho navigation buttons */
