@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ĐỨC LINH STORE - Tra cứu đơn hàng</title>
-  <style>
+<style>
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -340,6 +340,7 @@
             color: #007bff;
             text-decoration: none;
             white-space: nowrap; /* Ngăn việc tách dòng */
+            font-weight: bold;
         }
         .phone-link:hover {
             text-decoration: underline;
@@ -348,11 +349,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 15px; /* Tăng gap để phân cách rõ ràng hơn */
+            flex-wrap: nowrap; /* Ngăn wrap trên desktop */
+            margin: 5px 0;
         }
         .phone-line {
             white-space: nowrap;
+        }
+        .phone-divider {
+            color: #333;
+            font-weight: bold;
+            margin: 0 5px;
         }
         @media (max-width: 600px) {
             .container {
@@ -431,14 +438,16 @@
             .footer-banner strong {
                 font-size: 1.3em;
             }
-            /* Trên mobile, hiển thị phone numbers trên một dòng hoặc tách đúng cách */
+            /* Trên mobile, giữ flex-direction: row nhưng cho phép wrap nếu cần, và font nhỏ hơn để fit */
             .phone-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 5px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+                font-size: 0.85em; /* Giảm font-size để fit tốt hơn trên mobile */
             }
-            .phone-line {
-                white-space: nowrap;
+            .phone-divider {
+                margin: 0 3px;
             }
         }
         @media (max-width: 480px) {
@@ -477,10 +486,11 @@
                 margin-bottom: 0; /* Đảm bảo header sát với nav-buttons */
             }
             .phone-container {
-                gap: 3px;
+                font-size: 0.8em; /* Giảm thêm font-size cho mobile nhỏ */
+                gap: 5px;
             }
-            .phone-line {
-                font-size: 0.9em;
+            .phone-divider {
+                margin: 0 2px;
             }
         }
     </style>
