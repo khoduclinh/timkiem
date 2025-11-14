@@ -543,7 +543,7 @@
             })
             .then(base64 => {
                 const logo = document.getElementById('logo');
-                logo.src = 'data:image/jpeg;base64,' + base64.trim();
+                logo.src = base64.trim();
             })
             .catch(error => {
                 console.error('Lỗi tải logo:', error);
