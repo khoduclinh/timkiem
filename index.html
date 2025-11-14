@@ -361,6 +361,74 @@
             font-weight: bold;
             margin: 0 5px;
         }
+
+        /* CSS cho modal QR thanh toán */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .modal h2 {
+            margin: 0 0 20px;
+            color: #333;
+        }
+        .qr-img {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+        }
+        .download-btn {
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            background-color: #218838;
+            transform: translateY(-1px);
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.3s ease;
+        }
+        .close-modal:hover {
+            color: #333;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -449,6 +517,15 @@
             .phone-divider {
                 margin: 0 3px;
             }
+            /* Modal trên mobile */
+            .modal-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            .qr-img {
+                width: 150px;
+                height: 150px;
+            }
         }
         @media (max-width: 480px) {
             .header h1 {
@@ -503,7 +580,7 @@
                 <a href="https://khoduclinh.github.io/timkiem" class="nav-btn"><i class="fa fa-search"></i>TÌM KIẾM</a>
                 <a href="#" class="nav-btn"><i class="fa fa-shopping-bag"></i>CỬA HÀNG</a>
                 <a href="zalo://conversation?phone=0934366766" class="nav-btn"><i class="fa fa-th-large"></i>TÌM THEO MẪU</a>
-                <a href="#" class="nav-btn"><i class="fa fa-credit-card"></i>THANH TOÁN</a>
+                <a href="javascript:void(0);" class="nav-btn" id="paymentBtn"><i class="fa fa-credit-card"></i>THANH TOÁN</a>
             </div>
         </div>
 
@@ -529,6 +606,18 @@
     <span class="phone-line"><a href="tel:+84934366766" class="phone-link">0934 366 766</a></span> - 
     <span class="phone-line"><a href="tel:+840775885665" class="phone-link">0775 885 665</a></span>
 </div>
+        </div>
+    </div>
+
+    <!-- Modal QR Thanh toán -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+            <h2>Quét mã QR để chuyển khoản</h2>
+            <img id="qrImg" src="" alt="QR Code Thanh toán" class="qr-img">
+            <a id="downloadBtn" class="download-btn" download="qr_thanh_toan.png">
+                <i class="fa fa-download"></i> Tải xuống QR
+            </a>
         </div>
     </div>
 
@@ -642,6 +731,53 @@
                 timKiemKhachHang();
             }
         });
+
+        // Xử lý nút Thanh toán
+        let qrBase64 = null;
+        document.getElementById('paymentBtn').addEventListener('click', function() {
+            if (!qrBase64) {
+                // Tải QR nếu chưa tải
+                const loadingText = document.querySelector('.modal-content h2');
+                loadingText.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải QR...';
+                document.getElementById('paymentModal').classList.add('show');
+
+                fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.base64')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Không thể tải QR');
+                        }
+                        return response.text();
+                    })
+                    .then(base64 => {
+                        qrBase64 = base64.trim();
+                        const qrImg = document.getElementById('qrImg');
+                        const downloadBtn = document.getElementById('downloadBtn');
+                        qrImg.src = `${qrBase64}`;
+                        downloadBtn.href = `data:image/png;base64,${qrBase64}`;
+                        loadingText.innerHTML = 'Quét mã QR để chuyển khoản';
+                    })
+                    .catch(error => {
+                        console.error('Lỗi tải QR:', error);
+                        loadingText.innerHTML = 'Lỗi tải QR, vui lòng thử lại!';
+                        setTimeout(closePaymentModal, 2000);
+                    });
+            } else {
+                // Nếu đã tải, chỉ hiển thị modal
+                document.getElementById('paymentModal').classList.add('show');
+            }
+        });
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('show');
+        }
+
+        // Đóng modal khi click bên ngoài
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target === modal) {
+                closePaymentModal();
+            }
+        }
     </script>
 </body>
 </html>
