@@ -27,36 +27,44 @@
             50% { opacity: 0.5; }
         }
 
-        @keyframes rotate {
-            to {
-                transform: rotate(360deg);
+        /* Hiệu ứng glowing border RGB cho logo */
+        @keyframes rgbGlow {
+            0% {
+                box-shadow: 
+                    0 0 2px #ff0000, 
+                    0 0 5px #ff0000, 
+                    0 0 8px #ff0000, 
+                    0 0 11px #ff0000, 
+                    0 0 15px #ff0000,
+                    inset 0 0 5px rgba(255, 0, 0, 0.5);
             }
-        }
-
-        /* Hiệu ứng glowing border RGB dạng đuổi */
-        .logo {
-            position: relative;
-            width: 250px; 
-            height: auto; 
-            border-radius: 50%; 
-            display: block;
-            margin: 0 auto 20px;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        .logo::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            z-index: -1;
-            border-radius: inherit;
-            background: conic-gradient(from 0deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0000);
-            mask: radial-gradient(circle closest-side, transparent 85%, black 100%);
-            -webkit-mask: radial-gradient(circle closest-side, transparent 85%, black 100%);
-            animation: rotate 3s linear infinite;
+            33% {
+                box-shadow: 
+                    0 0 2px #00ff00, 
+                    0 0 5px #00ff00, 
+                    0 0 8px #00ff00, 
+                    0 0 11px #00ff00, 
+                    0 0 15px #00ff00,
+                    inset 0 0 5px rgba(0, 255, 0, 0.5);
+            }
+            66% {
+                box-shadow: 
+                    0 0 5px #0000ff, 
+                    0 0 5px #0000ff, 
+                    0 0 8px #0000ff, 
+                    0 0 11px #0000ff, 
+                    0 0 15px #0000ff,
+                    inset 0 0 5px rgba(0, 0, 255, 0.5);
+            }
+            100% {
+                box-shadow: 
+                    0 0 2px #ff0000, 
+                    0 0 5px #ff0000, 
+                    0 0 8px #ff0000, 
+                    0 0 11px #ff0000, 
+                    0 0 15px #ff0000,
+                    inset 0 0 5px rgba(255, 0, 0, 0.5);
+            }
         }
 
         /* CSS cho navigation buttons */
@@ -115,6 +123,15 @@
             text-align: center; 
             margin-bottom: 0; /* Đặt margin-bottom = 0 để nav-buttons sát với search-form */
             padding: 20px 0;
+        }
+        .logo { 
+            width: 250px; 
+            height: auto; 
+            border-radius: 50%; 
+            display: block;
+            margin: 0 auto 20px; /* Giảm margin-bottom từ 40px xuống 20px để khoảng cách từ logo đến buttons nhỏ hơn */
+            animation: fadeIn 1s ease-in-out, rgbGlow 5s linear infinite;
+            border: 2px solid transparent; /* Để hỗ trợ inset shadow */
         }
         .header h1 {
             margin: 0;
