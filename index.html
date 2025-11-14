@@ -565,7 +565,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <img alt="" src="https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.json" class="logo" id="logo" />
+ <!-- Thẻ <img> với ID để JS có thể truy cập -->
+    <img id="logoImg" src="https://via.placeholder.com/250?text=Loading..." alt="Logo" style="width: 250px; height: auto; border-radius: 50%;"/>
             <div class="nav-buttons">
                 <a href="https://khoduclinh.github.io/timkiem" class="nav-btn"><i class="fa fa-search"></i>TÌM KIẾM</a>
                 <a href="#" class="nav-btn"><i class="fa fa-shopping-bag"></i>CỬA HÀNG</a>
@@ -613,25 +614,33 @@
 
     <script>
         // Tải logo từ logo.json khi trang load
+     // Fetch JSON khi trang load
         window.addEventListener('load', function() {
-            fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.json')
+            const img = document.getElementById('logoImg');
+            const url = 'https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.json';
+
+            fetch(url)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Không tìm thấy file logo');
+                        throw new Error('Không tải được JSON');
                     }
-                    return response.json();
+                    return response.json();  // Parse JSON
                 })
                 .then(data => {
-                    // Giả sử JSON có trường 'logoBase64' chứa full data URI bắt đầu bằng data:image/jpeg;base64,...
-                    const logoSrc = data.logoBase64; // Thay đổi tên trường nếu khác
-                    if (logoSrc && logoSrc.startsWith('data:image')) {
-                        document.getElementById('logo').src = logoSrc;
+                    // Trích xuất chuỗi Base64 (thay 'logoBase64' nếu tên trường khác)
+                    const base64Data = data.logoBase64;  // Ví dụ: "data:image/jpeg;base64,/9j/..."
+                    
+                    if (base64Data && base64Data.startsWith('data:image')) {
+                        img.src = base64Data;  // Gán trực tiếp vào src
+                        img.alt = 'Logo Đức Linh Store';
                     } else {
-                        console.error('Không tìm thấy data URI hợp lệ trong dữ liệu logo.');
+                        throw new Error('Dữ liệu Base64 không hợp lệ');
                     }
                 })
                 .catch(error => {
-                    console.error('Lỗi tải logo:', error);
+                    console.error('Lỗi:', error);
+                    img.src = 'https://via.placeholder.com/250?text=Error';  // Fallback nếu lỗi
+                    img.alt = 'Lỗi tải logo';
                 });
         });
 
