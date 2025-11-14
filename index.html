@@ -27,43 +27,13 @@
             50% { opacity: 0.5; }
         }
 
-        /* Hiệu ứng glowing border RGB cho logo */
-        @keyframes rgbGlow {
-            0% {
-                box-shadow: 
-                    0 0 2px #ff0000, 
-                    0 0 5px #ff0000, 
-                    0 0 8px #ff0000, 
-                    0 0 11px #ff0000, 
-                    0 0 15px #ff0000,
-                    inset 0 0 5px rgba(255, 0, 0, 0.5);
+        /* Hiệu ứng RGB đuổi cho border (chasing effect) */
+        @keyframes rgbChase {
+            from {
+                transform: rotate(0deg);
             }
-            33% {
-                box-shadow: 
-                    0 0 2px #00ff00, 
-                    0 0 5px #00ff00, 
-                    0 0 8px #00ff00, 
-                    0 0 11px #00ff00, 
-                    0 0 15px #00ff00,
-                    inset 0 0 5px rgba(0, 255, 0, 0.5);
-            }
-            66% {
-                box-shadow: 
-                    0 0 5px #0000ff, 
-                    0 0 5px #0000ff, 
-                    0 0 8px #0000ff, 
-                    0 0 11px #0000ff, 
-                    0 0 15px #0000ff,
-                    inset 0 0 5px rgba(0, 0, 255, 0.5);
-            }
-            100% {
-                box-shadow: 
-                    0 0 2px #ff0000, 
-                    0 0 5px #ff0000, 
-                    0 0 8px #ff0000, 
-                    0 0 11px #ff0000, 
-                    0 0 15px #ff0000,
-                    inset 0 0 5px rgba(255, 0, 0, 0.5);
+            to {
+                transform: rotate(360deg);
             }
         }
 
@@ -124,14 +94,43 @@
             margin-bottom: 0; /* Đặt margin-bottom = 0 để nav-buttons sát với search-form */
             padding: 20px 0;
         }
-        .logo { 
-            width: 250px; 
-            height: auto; 
-            border-radius: 50%; 
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 250px;
+            height: 250px; /* Set fixed height to ensure circle */
+            margin: 0 auto 20px;
+            animation: fadeIn 1s ease-in-out;
+            border: 2px solid transparent;
+        }
+        .logo {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
             display: block;
-            margin: 0 auto 20px; /* Giảm margin-bottom từ 40px xuống 20px để khoảng cách từ logo đến buttons nhỏ hơn */
-            animation: fadeIn 1s ease-in-out, rgbGlow 5s linear infinite;
-            border: 2px solid transparent; /* Để hỗ trợ inset shadow */
+            object-fit: cover;
+            box-shadow: 0 0 0 1.5px white; /* Viền trắng nhỏ hơn 1/2 */
+        }
+        .logo-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -5px; /* Giảm để mỏng hơn */
+            left: -5px;
+            width: calc(100% + 10px); /* Giảm để mỏng hơn */
+            height: calc(100% + 10px); /* Giảm để mỏng hơn */
+            border-radius: 50%;
+            background: conic-gradient(
+                #ff0000 0deg 120deg,
+                #00ff00 120deg 240deg,
+                #0000ff 240deg 360deg
+            );
+            z-index: -1;
+            animation: rgbChase 5s linear infinite; /* Tăng thời gian để mượt hơn */
+            filter: blur(8px); /* Tăng blur để lấn màu nhiều hơn, mượt mà */
+            opacity: 0.6; /* Giảm opacity để glow lan tỏa hơn */
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.4), 0 0 60px rgba(0, 255, 0, 0.4), 0 0 80px rgba(0, 0, 255, 0.4); /* Glow layers rộng hơn cho độ mượt */
         }
         .header h1 {
             margin: 0;
@@ -472,8 +471,15 @@
             .header h1 {
                 font-size: 2em;
             }
-            .logo {
+            .logo-wrapper {
                 width: 120px;
+                height: 120px;
+            }
+            .logo-wrapper::before {
+                top: -3px;
+                left: -3px;
+                width: calc(100% + 6px);
+                height: calc(100% + 6px);
             }
             .header {
                 margin-bottom: 0; /* Đảm bảo header sát với nav-buttons */
@@ -538,8 +544,15 @@
             .header h1 {
                 font-size: 1.8em;
             }
-            .logo {
+            .logo-wrapper {
                 width: 100px;
+                height: 100px;
+            }
+            .logo-wrapper::before {
+                top: -2px;
+                left: -2px;
+                width: calc(100% + 4px);
+                height: calc(100% + 4px);
             }
             .nav-buttons {
                 flex-direction: column;
@@ -582,7 +595,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <img alt="" src="https://via.placeholder.com/250?text=Loading+Logo..." class="logo" id="logo" />
+            <div class="logo-wrapper">
+                <img alt="" src="https://via.placeholder.com/250?text=Loading+Logo..." class="logo" id="logo" />
+            </div>
             <div class="nav-buttons">
                 <a href="https://khoduclinh.github.io/timkiem" class="nav-btn"><i class="fa fa-search"></i>TÌM KIẾM</a>
                 <a href="#" class="nav-btn"><i class="fa fa-shopping-bag"></i>CỬA HÀNG</a>
