@@ -614,35 +614,55 @@
 
     <script>
         // Tải logo từ logo.json khi trang load
-     // Fetch JSON khi trang load
-        window.addEventListener('load', function() {
-            const img = document.getElementById('logoImg');
-            const url = 'https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.json';
-
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Không tải được JSON');
-                    }
-                    return response.json();  // Parse JSON
-                })
-                .then(data => {
-                    // Trích xuất chuỗi Base64 (thay 'logoBase64' nếu tên trường khác)
-                    const base64Data = data.logoBase64;  // Ví dụ: "data:image/jpeg;base64,/9j/..."
-                    
-                    if (base64Data && base64Data.startsWith('data:image')) {
-                        img.src = base64Data;  // Gán trực tiếp vào src
-                        img.alt = 'Logo Đức Linh Store';
-                    } else {
-                        throw new Error('Dữ liệu Base64 không hợp lệ');
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi:', error);
-                    img.src = 'https://via.placeholder.com/250?text=Error';  // Fallback nếu lỗi
-                    img.alt = 'Lỗi tải logo';
-                });
+window.addEventListener('load', function() {
+    const img = document.getElementById('logoImg');  // Đảm bảo ID này khớp với <img id="logoImg">
+    const url = 'https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.json';
+    
+    fetch(url)
+        .then(response => {
+            console.log('Response status:', response.status);  // Debug: 200 = OK
+            console.log('Response text preview:', response.headers.get('content-type'));  // Kiểm tra type (nên là application/json)
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: Không tải được file`);
+            }
+            return response.text();  // Đọc as text trước để debug (sau parse nếu cần)
+        })
+        .then(textContent => {
+            console.log('Raw file content (first 200 chars):', textContent.substring(0, 200));  // Debug: Xem nội dung thô
+            
+            // Thử parse JSON
+            let data;
+            try {
+                data = JSON.parse(textContent);
+                console.log('Parsed JSON:', data);  // Debug: Cấu trúc JSON
+                console.log('JSON keys:', Object.keys(data));  // Các trường có sẵn
+            } catch (parseError) {
+                console.error('Parse JSON fail:', parseError);
+                throw new Error('File không phải JSON hợp lệ (có thể là text rỗng)');
+            }
+            
+            // Trích xuất base64 (thử nhiều tên trường)
+            let base64Data = data.logoBase64 || data.logo || data.image || data.base64Data || null;
+            console.log('Extracted base64:', base64Data ? base64Data.substring(0, 50) + '...' : 'Not found');
+            
+            if (base64Data && (base64Data.startsWith('data:image') || base64Data.includes('base64'))) {
+                img.src = base64Data;
+                img.alt = 'Logo Đức Linh Store';
+                console.log('Logo loaded from JSON!');
+            } else {
+                // Fallback: Hardcode base64 từ HTML gốc (nếu JSON fail)
+                console.log('Fallback to hardcoded base64');
+                img.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYanhsIARAAABtbnRyUkdCIFhZWiAH4wAMAAEAAAAAAABhY3NwQVBQTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLWp4bCACufkBQHM6b/D/A/Tw9worAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtkZXNjAAABCAAAAERjcHJ0AAABTAAAACR3dHB0AAABcAAAABRjaGFkAAABhAAAACxja...';  // Paste full base64 ở đây
+                img.alt = 'Logo (Fallback)';
+            }
+        })
+        .catch(error => {
+            console.error('Full error:', error);
+            // Fallback an toàn
+            img.src = 'https://via.placeholder.com/250x250/007bff/ffffff?text=Logo+Error';  // Placeholder xanh
+            img.alt = 'Lỗi tải logo - Kiểm tra file JSON';
         });
+});
 
         function timKiemKhachHang() {
             const phoneInput = document.getElementById('NhapSoDienThoai').value.trim();
