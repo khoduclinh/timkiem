@@ -394,8 +394,8 @@
             color: #333;
         }
         .qr-img {
-            width: 200px;
-            height: 200px;
+            width: 300px;
+            height: 300px;
             margin: 0 auto 20px;
             border: 2px solid #007bff;
             border-radius: 10px;
@@ -410,7 +410,7 @@
             font-size: 16px;
             text-decoration: none;
             display: block;
-            width: 200px;
+            width: 300px;
             margin: 0 auto;
             transition: all 0.3s ease;
         }
@@ -525,11 +525,11 @@
                 margin: 20px;
             }
             .qr-img {
-                width: 150px;
-                height: 150px;
+                width: 225px;
+                height: 225px;
             }
             .download-btn {
-                width: 150px;
+                width: 225px;
                 padding: 10px 20px;
                 font-size: 14px;
             }
@@ -759,8 +759,8 @@
                         qrBase64 = base64.trim();
                         const qrImg = document.getElementById('qrImg');
                         const downloadBtn = document.getElementById('downloadBtn');
-                        qrImg.src = `${qrBase64}`;
-                        downloadBtn.href = `${qrBase64}`;
+                        qrImg.src = `data:image/png;base64,${qrBase64}`;
+                        downloadBtn.href = `data:image/png;base64,${qrBase64}`;
                         loadingText.innerHTML = 'Quét mã QR để chuyển khoản';
                     })
                     .catch(error => {
