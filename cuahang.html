@@ -645,247 +645,161 @@
         </div>
     </div>
 
-    <script>
-        // Tải và hiển thị logo từ file base64 (giữ nguyên)
-        fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.base64')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Không thể tải logo');
-                }
-                return response.text();
-            })
-            .then(base64 => {
-                const logo = document.getElementById('logo');
-                logo.src = base64.trim();
-            })
-            .catch(error => {
-                console.error('Lỗi tải logo:', error);
-            });
+  <script>
+    // Cache dữ liệu đã tải
+    const productCache = {
+        quanao: null,
+        giaydep: null,
+        khac: null
+    };
 
-        // Toggle expander
-        function toggleExpander(id) {
-            const content = document.getElementById(id + '-content');
-            content.classList.toggle('open');
+    // URL các file JSON
+    const jsonUrls = {
+        quanao: 'https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/SANQUANAO.json',
+        giaydep: 'https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/SANGIAYDEP.json',
+        khac: 'https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/SANSANPHAMKHAC.json'
+    };
+
+    // Tải trước tất cả dữ liệu khi trang load (tùy chọn: có thể preload luôn)
+    function preloadAllData() {
+        Object.keys(jsonUrls).forEach(type => {
+            fetch(jsonUrls[type])
+                .then(r => r.ok ? r.json() : Promise.reject('File không tồn tại'))
+                .then(data => {
+                    productCache[type] = data;
+                })
+                .catch(err => console.error(`Lỗi tải ${type}:`, err));
+        });
+    }
+
+    // Hiển thị sản phẩm (có lọc theo query nếu có)
+    function displayProducts(type, query = '') {
+        const productsDiv = document.getElementById(type + '-products');
+        const resultsDiv = document.getElementById('results-' + type);
+        const data = productCache[type];
+
+        if (!data) {
+            productsDiv.innerHTML = '<p class="no-result">Đang tải dữ liệu, vui lòng đợi...</p>';
+            resultsDiv.classList.add('show');
+            return;
         }
 
-        // Tìm kiếm sản phẩm
-        function searchProducts(type) {
-            const inputId = type + '-input';
-            const loadingId = 'loading-' + type;
-            const buttonId = 'search-' + type;
-            const resultsId = 'results-' + type;
-            const productsId = type + '-products';
+        let filtered = data;
+        if (query) {
+            query = query.toLowerCase();
+            filtered = data.filter(item => 
+                item.Description && item.Description.toLowerCase().includes(query)
+            );
+        }
 
-            const query = document.getElementById(inputId).value.trim().toLowerCase();
+        if (filtered.length === 0) {
+            productsDiv.innerHTML = '<p class="no-result">Không tìm thấy sản phẩm phù hợp.</p>';
+        } else {
+            let html = '';
+            filtered.forEach(item => {
+                const imgSrc = item.ImageData ? `data:image/png;base64,${item.ImageData}` : 'https://via.placeholder.com/200?text=No+Image';
+                const price = item.UnitPrice ? item.UnitPrice.toLocaleString('vi-VN') + ' VNĐ' : 'Liên hệ';
+                html += `
+                    <div class="product-item">
+                        <img src="${imgSrc}" alt="Sản phẩm" class="product-img" onerror="this.src='https://via.placeholder.com/200?text=No+Image';">
+                        <div class="product-description">${item.Description || 'Chưa có mô tả'}</div>
+                        <div class="product-price">Giá: ${price}</div>
+                    </div>`;
+            });
+            productsDiv.innerHTML = html;
+        }
+        resultsDiv.classList.add('show');
+    }
 
-            if (!query) {
-                alert('Vui lòng nhập từ khóa tìm kiếm!');
-                return;
-            }
+    // Khi mở expander lần đầu → load dữ liệu + hiển thị toàn bộ
+    function toggleExpander(id) {
+        const content = document.getElementById(id + '-content');
+        const wasOpen = content.classList.contains('open');
+        content.classList.toggle('open');
 
-            const loadingDiv = document.getElementById(loadingId);
-            const button = document.getElementById(buttonId);
-            const resultsDiv = document.getElementById(resultsId);
-            const productsDiv = document.getElementById(productsId);
+        // Chỉ xử lý khi vừa mới mở (chưa mở trước đó)
+        if (!wasOpen && !productCache[id]) {
+            const loading = document.getElementById('loading-' + id);
+            loading.classList.add('show');
 
-            // Hiển thị loading
-            loadingDiv.classList.add('show');
-            button.disabled = true;
-            button.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tìm...';
-
-            // Map type to JSON file
-            const fileMap = {
-                'quanao': 'SANQUANAO.json',
-                'giaydep': 'SANGIAYDEP.json',
-                'khac': 'SANSANPHAMKHAC.json'
-            };
-            const url = `https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/${fileMap[type]}`;
-
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Không tìm thấy file');
-                    }
-                    return response.json();
+            fetch(jsonUrls[id])
+                .then(r => {
+                    if (!r.ok) throw new Error('Không tải được dữ liệu');
+                    return r.json();
                 })
                 .then(data => {
-                    // Filter dựa trên Description chứa query
-                    const filtered = data.filter(item => 
-                        item.Description && item.Description.toLowerCase().includes(query)
-                    );
-
-                    if (filtered.length > 0) {
-                        let html = '';
-                        filtered.forEach(item => {
-                            const imgSrc = item.ImageData ? `data:image/png;base64,${item.ImageData}` : 'https://via.placeholder.com/200?text=No+Image';
-                            const price = item.UnitPrice ? item.UnitPrice.toLocaleString('vi-VN') + ' VNĐ' : 'Chưa có giá';
-                            html += `
-                                <div class="product-item">
-                                    <img src="${imgSrc}" alt="Sản phẩm" class="product-img" onerror="this.src='https://via.placeholder.com/200?text=No+Image';">
-                                    <div class="product-description">${item.Description || 'Chưa có mô tả'}</div>
-                                    <div class="product-price">Giá: ${price}</div>
-                                </div>
-                            `;
-                        });
-                        productsDiv.innerHTML = html;
-                    } else {
-                        productsDiv.innerHTML = '<p class="no-result">Không tìm thấy sản phẩm phù hợp.</p>';
-                    }
-
-                    // Hiển thị results
-                    resultsDiv.classList.add('show');
+                    productCache[id] = data;
+                    displayProducts(id); // Hiển thị toàn bộ ngay khi mở
                 })
-                .catch(error => {
-                    productsDiv.innerHTML = '<p class="no-result">Lỗi tải dữ liệu: ' + error.message + '</p>';
-                    resultsDiv.classList.add('show');
-                    console.error('Lỗi:', error);
+                .catch(err => {
+                    document.getElementById(id + '-products').innerHTML = 
+                        `<p class="no-result">Lỗi tải dữ liệu: ${err.message}</p>`;
+                    document.getElementById('results-' + id).classList.add('show');
                 })
                 .finally(() => {
-                    setTimeout(() => {
-                        loadingDiv.classList.remove('show');
-                    }, 300);
-                    button.disabled = false;
-                    button.innerHTML = 'Tìm Kiếm';
+                    setTimeout(() => loading.classList.remove('show'), 300);
                 });
+        } else if (!wasOpen && productCache[id]) {
+            // Đã có cache → hiển thị ngay lập tức
+            displayProducts(id);
         }
+    }
 
-        // Enter key cho các input
-        ['quanao', 'giaydep', 'khac'].forEach(type => {
-            document.getElementById(type + '-input').addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    searchProducts(type);
-                }
-            });
+    // Tìm kiếm (lọc trên dữ liệu đã có sẵn)
+    function searchProducts(type) {
+        if (!productCache[type]) {
+            alert('Dữ liệu chưa được tải. Vui lòng mở mục này trước!');
+            return;
+        }
+        const query = document.getElementById(type + '-input').value.trim();
+        displayProducts(type, query);
+    }
+
+    // Enter để tìm kiếm
+    ['quanao', 'giaydep', 'khac'].forEach(type => {
+        document.getElementById(type + '-input').addEventListener('keypress', e => {
+            if (e.key === 'Enter') searchProducts(type);
         });
+    });
 
-        // Xử lý nút Thanh toán (giữ nguyên từ trang gốc)
-        let qrBase64 = null;
-        document.getElementById('paymentBtn').addEventListener('click', function() {
-            if (!qrBase64) {
-                const loadingText = document.querySelector('.modal-content h2');
-                loadingText.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải QR...';
-                document.getElementById('paymentModal').classList.add('show');
+    // Tải logo
+    fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.base64')
+        .then(r => r.ok ? r.text() : Promise.reject())
+        .then(base64 => document.getElementById('logo').src = base64.trim())
+        .catch(() => {});
 
-                fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.base64')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Không thể tải QR');
-                        }
-                        return response.text();
-                    })
-                    .then(base64 => {
-                        qrBase64 =base64.trim();
-                        const qrImg = document.getElementById('qrImg');
-                        const downloadBtn = document.getElementById('downloadBtn');
-                        qrImg.src = qrBase64;
-                        downloadBtn.href = qrBase64;
-                        loadingText.innerHTML = 'Quét mã QR để chuyển khoản';
-                    })
-                    .catch(error => {
-                        console.error('Lỗi tải QR:', error);
-                        loadingText.innerHTML = 'Lỗi tải QR, vui lòng thử lại!';
-                        setTimeout(closePaymentModal, 2000);
-                    });
-            } else {
-                document.getElementById('paymentModal').classList.add('show');
-            }
-        });
-
-        function closePaymentModal() {
-            document.getElementById('paymentModal').classList.remove('show');
+    // Thanh toán QR (giữ nguyên logic cũ nhưng tối ưu)
+    let qrBase64 = null;
+    document.getElementById('paymentBtn').onclick = () => {
+        if (!qrBase64) {
+            document.getElementById('paymentModal').classList.add('show');
+            document.querySelector('.modal-content h2').innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải QR...';
+            fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.base64')
+                .then(r => r.ok ? r.text() : Promise.reject())
+                .then(base64 => {
+                    qrBase64 = base64.trim();
+                    document.getElementById('qrImg').src = qrBase64;
+                    document.getElementById('downloadBtn').href = qrBase64;
+                    document.querySelector('.modal-content h2').textContent = 'Quét mã QR để chuyển khoản';
+                })
+                .catch(() => {
+                    document.querySelector('.modal-content h2').textContent = 'Lỗi tải QR!';
+                    setTimeout(closePaymentModal, 2000);
+                });
+        } else {
+            document.getElementById('paymentModal').classList.add('show');
         }
+    };
 
-        window.onclick = function(event) {
-            const modal = document.getElementById('paymentModal');
-            if (event.target === modal) {
-                closePaymentModal();
-            }
-        }
+    function closePaymentModal() {
+        document.getElementById('paymentModal').classList.remove('show');
+    }
+    window.onclick = e => e.target === document.getElementById('paymentModal') && closePaymentModal();
 
-        // CSS cho modal (thêm từ trang gốc)
-        const modalStyle = document.createElement('style');
-        modalStyle.textContent = `
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                animation: fadeIn 0.3s ease-in-out;
-            }
-            .modal.show {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .modal-content {
-                background-color: white;
-                padding: 30px;
-                border-radius: 10px;
-                text-align: center;
-                max-width: 400px;
-                width: 90%;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-                animation: fadeIn 0.4s ease-in-out;
-                position: relative;
-            }
-            .close-modal {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 24px;
-                cursor: pointer;
-                color: #aaa;
-                transition: color 0.3s ease;
-            }
-            .close-modal:hover {
-                color: #333;
-            }
-            .qr-img {
-                width: 300px;
-                height: 300px;
-                margin: 0 auto 20px;
-                border: 2px solid #007bff;
-                border-radius: 10px;
-            }
-            .download-btn {
-                padding: 12px 25px;
-                background-color: #28a745;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 16px;
-                text-decoration: none;
-                display: block;
-                width: 300px;
-                margin: 0 auto;
-                transition: all 0.3s ease;
-            }
-            .download-btn:hover {
-                background-color: #218838;
-                transform: translateY(-1px);
-            }
-            @media (max-width: 600px) {
-                .modal-content {
-                    padding: 20px;
-                    margin: 20px;
-                }
-                .qr-img {
-                    width: 225px;
-                    height: 225px;
-                }
-                .download-btn {
-                    width: 225px;
-                    padding: 10px 20px;
-                    font-size: 14px;
-                }
-            }
-        `;
-        document.head.appendChild(modalStyle);
-    </script>
+    // Tùy chọn: Tải trước tất cả dữ liệu ngay khi mở trang (rất nhanh nếu dùng CDN tốt)
+    window.addEventListener('load', () => {
+        // preloadAllData(); // Bỏ comment dòng này nếu muốn load hết ngay từ đầu (tối ưu nhất)
+    });
+</script>
 </body>
 </html>
