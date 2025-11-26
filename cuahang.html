@@ -768,38 +768,134 @@
         .then(base64 => document.getElementById('logo').src = base64.trim())
         .catch(() => {});
 
-    // Thanh toán QR (giữ nguyên logic cũ nhưng tối ưu)
-    let qrBase64 = null;
-    document.getElementById('paymentBtn').onclick = () => {
-        if (!qrBase64) {
-            document.getElementById('paymentModal').classList.add('show');
-            document.querySelector('.modal-content h2').innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải QR...';
-            fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.base64')
-                .then(r => r.ok ? r.text() : Promise.reject())
-                .then(base64 => {
-                    qrBase64 = base64.trim();
-                    document.getElementById('qrImg').src = qrBase64;
-                    document.getElementById('downloadBtn').href = qrBase64;
-                    document.querySelector('.modal-content h2').textContent = 'Quét mã QR để chuyển khoản';
-                })
-                .catch(() => {
-                    document.querySelector('.modal-content h2').textContent = 'Lỗi tải QR!';
-                    setTimeout(closePaymentModal, 2000);
-                });
-        } else {
-            document.getElementById('paymentModal').classList.add('show');
+     // Xử lý nút Thanh toán (giữ nguyên từ trang gốc)
+        let qrBase64 = null;
+        document.getElementById('paymentBtn').addEventListener('click', function() {
+            if (!qrBase64) {
+                const loadingText = document.querySelector('.modal-content h2');
+                loadingText.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải QR...';
+                document.getElementById('paymentModal').classList.add('show');
+
+                fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.base64')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Không thể tải QR');
+                        }
+                        return response.text();
+                    })
+                    .then(base64 => {
+                        qrBase64 =base64.trim();
+                        const qrImg = document.getElementById('qrImg');
+                        const downloadBtn = document.getElementById('downloadBtn');
+                        qrImg.src = qrBase64;
+                        downloadBtn.href = qrBase64;
+                        loadingText.innerHTML = 'Quét mã QR để chuyển khoản';
+                    })
+                    .catch(error => {
+                        console.error('Lỗi tải QR:', error);
+                        loadingText.innerHTML = 'Lỗi tải QR, vui lòng thử lại!';
+                        setTimeout(closePaymentModal, 2000);
+                    });
+            } else {
+                document.getElementById('paymentModal').classList.add('show');
+            }
+        });
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('show');
         }
-    };
 
-    function closePaymentModal() {
-        document.getElementById('paymentModal').classList.remove('show');
-    }
-    window.onclick = e => e.target === document.getElementById('paymentModal') && closePaymentModal();
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target === modal) {
+                closePaymentModal();
+            }
+        }
 
-    // Tùy chọn: Tải trước tất cả dữ liệu ngay khi mở trang (rất nhanh nếu dùng CDN tốt)
-    window.addEventListener('load', () => {
-        // preloadAllData(); // Bỏ comment dòng này nếu muốn load hết ngay từ đầu (tối ưu nhất)
-    });
+        // CSS cho modal (thêm từ trang gốc)
+        const modalStyle = document.createElement('style');
+        modalStyle.textContent = `
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                animation: fadeIn 0.3s ease-in-out;
+            }
+            .modal.show {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal-content {
+                background-color: white;
+                padding: 30px;
+                border-radius: 10px;
+                text-align: center;
+                max-width: 400px;
+                width: 90%;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                animation: fadeIn 0.4s ease-in-out;
+                position: relative;
+            }
+            .close-modal {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
+                cursor: pointer;
+                color: #aaa;
+                transition: color 0.3s ease;
+            }
+            .close-modal:hover {
+                color: #333;
+            }
+            .qr-img {
+                width: 300px;
+                height: 300px;
+                margin: 0 auto 20px;
+                border: 2px solid #007bff;
+                border-radius: 10px;
+            }
+            .download-btn {
+                padding: 12px 25px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                text-decoration: none;
+                display: block;
+                width: 300px;
+                margin: 0 auto;
+                transition: all 0.3s ease;
+            }
+            .download-btn:hover {
+                background-color: #218838;
+                transform: translateY(-1px);
+            }
+            @media (max-width: 600px) {
+                .modal-content {
+                    padding: 20px;
+                    margin: 20px;
+                }
+                .qr-img {
+                    width: 225px;
+                    height: 225px;
+                }
+                .download-btn {
+                    width: 225px;
+                    padding: 10px 20px;
+                    font-size: 14px;
+                }
+            }
+        `;
+        document.head.appendChild(modalStyle);
 </script>
 </body>
 </html>
