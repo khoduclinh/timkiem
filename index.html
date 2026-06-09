@@ -74,7 +74,11 @@
             font-size: 16px;
         }
 
-        img {
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        img.logo,
+        img.avatar {
             border-radius: 50%;
         }
         body { 
@@ -83,9 +87,11 @@
             padding: 0;
             background-color: #f4f4f4; 
             line-height: 1.6;
+            overflow-x: hidden;
         }
         .container {
-            max-width: 800px;
+            max-width: 1100px;
+            width: 100%;
             margin: 0 auto;
             padding: 20px;
         }
@@ -211,7 +217,7 @@
         }
         .result { 
             background: white;
-            padding: 30px;
+            padding: 24px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             display: none;
@@ -219,6 +225,8 @@
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
+            max-width: 100%;
+            overflow: hidden;
         }
         .result.show {
             display: block;
@@ -226,84 +234,240 @@
             transform: translateY(0);
             animation: fadeIn 0.6s ease-in-out;
         }
-        .customer-info { 
+        .customer-info {
             margin-bottom: 30px;
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
             animation: fadeIn 0.8s ease-in-out;
+            max-width: 100%;
+            min-width: 0;
         }
-        .avatar { 
-            width: 100px;
-            height: 100px;
+        .customer-profile {
+            display: grid;
+            grid-template-columns: minmax(0, 120px) minmax(0, 1fr);
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+            border: 1px solid #e3ebf5;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 14px rgba(0, 91, 187, 0.06);
+        }
+        .customer-info-col {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .customer-avatar-col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            flex-shrink: 0;
-            border: 3px solid #007bff;
+            object-fit: cover;
+            border: 4px solid #007bff;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
             transition: transform 0.3s ease;
         }
         .avatar:hover {
-            transform: scale(1.05);
+            transform: scale(1.04);
         }
-        .customer-info h2 {
-            margin: 0 0 10px;
+        .customer-info-col h2 {
+            margin: 0 0 16px;
+            color: #1a2b4a;
+            font-size: 1.75em;
+            line-height: 1.3;
+        }
+        .customer-facts {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .customer-facts li {
+            display: grid;
+            grid-template-columns: minmax(0, 110px) minmax(0, 1fr);
+            align-items: start;
+            gap: 10px;
+            padding: 10px 12px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #eef2f7;
+            min-width: 0;
+        }
+        .fact-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #007bff;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .fact-value {
+            font-size: 15px;
             color: #333;
+            word-break: break-word;
+            line-height: 1.5;
         }
-        .customer-info p {
-            margin: 5px 0;
-            color: #666;
-        }
-        .orders h3 {
-            color: #333;
+        .orders-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
+        }
+        .orders-header h3 {
+            margin: 0;
+            color: #333;
             animation: fadeIn 0.7s ease-in-out;
         }
+        .orders-summary {
+            font-size: 14px;
+            color: #555;
+            background: #eef5ff;
+            padding: 8px 14px;
+            border-radius: 20px;
+        }
+        .orders-summary strong {
+            color: #007bff;
+        }
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 18px;
+        }
         .order { 
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-            padding: 20px;
-            border-radius: 8px;
-            background: #f9f9f9;
+            border: 1px solid #e0e6ef;
+            padding: 0;
+            border-radius: 12px;
+            background: #fff;
+            overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         .order:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
-        .order p {
-            margin: 5px 0;
-            color: #666;
-        }
-        .item-row {
+        .order-image-wrap {
+            background: #f3f6fb;
             display: flex;
-            align-items: flex-start;
-            margin: 10px 0;
-            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            padding: 12px;
         }
         .item-img { 
-            width: 100px;
-            height: 100px;
-            border-radius: 5px;
-            flex-shrink: 0;
+            width: 100%;
+            max-width: 280px;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
             transition: transform 0.3s ease;
         }
         .item-img:hover {
-            transform: scale(1.1);
+            transform: scale(1.03);
         }
-        .item-detail {
-            flex: 1;
+        .order-no-image {
+            color: #999;
+            font-style: italic;
+            font-size: 14px;
         }
-        .item-info {
+        .order-body {
+            padding: 16px 18px 18px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 10px;
+            flex: 1;
         }
-        .item-field {
-            font-size: 14px;
+        .order-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .order-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #222;
+            line-height: 1.4;
+            margin: 0;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .status-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .meta-value.note {
+            font-style: italic;
             color: #555;
         }
-        .item-field strong {
+        .order-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+        }
+        .meta-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .meta-item.full {
+            grid-column: 1 / -1;
+        }
+        .meta-label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        .meta-value {
+            font-size: 14px;
             color: #333;
+            word-break: break-word;
+        }
+        .meta-value.price {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+        .meta-value.total {
+            color: #198754;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .error-message {
+            text-align: center;
+            color: #dc3545;
+            padding: 16px;
+            background: #fff5f5;
+            border-radius: 8px;
+            border: 1px solid #f5c2c7;
         }
         .no-result { 
             text-align: center;
@@ -487,25 +651,32 @@
             .result {
                 padding: 20px;
             }
-            .customer-info {
-                flex-direction: column;
-                align-items: center;
+            .customer-profile {
+                grid-template-columns: 1fr;
                 text-align: center;
-                gap: 15px;
+                padding: 22px 18px;
+                gap: 18px;
             }
-            .avatar {
-                margin: 0 auto;
+            .customer-facts li {
+                grid-template-columns: 1fr;
+                gap: 6px;
+                text-align: left;
             }
-            .item-row {
+            .fact-label {
+                font-size: 12px;
+            }
+            .orders-grid {
+                grid-template-columns: 1fr;
+            }
+            .order-meta {
+                grid-template-columns: 1fr;
+            }
+            .customer-detail-grid {
+                grid-template-columns: 1fr;
+            }
+            .orders-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
-            }
-            .item-img {
-                align-self: center;
-            }
-            .order {
-                padding: 15px;
             }
             .footer-banner {
                 padding: 15px;
@@ -610,7 +781,7 @@
 		   <h1>TRA CỨU ĐƠN HÀNG</h1>
             <input type="text" id="NhapSoDienThoai" placeholder="Nhập số điện thoại">
             <div id="loading">
-                <i class="fa fa-spinner fa-spin"></i> Đang tìm kiếm...
+                <i class="fa fa-spinner fa-spin"></i> Đang tải dữ liệu từ Firebase...
             </div>
             <button id="TimKiem" onclick="timKiemKhachHang()">Tìm Kiếm</button>
         </div>
@@ -644,8 +815,277 @@
     </div>
 
     <script>
+        (function restoreSpaPathFrom404() {
+            try {
+                const spaPath = sessionStorage.getItem('spa_path');
+                if (spaPath) {
+                    sessionStorage.removeItem('spa_path');
+                    history.replaceState(null, '', spaPath);
+                }
+            } catch (e) { /* ignore */ }
+        })();
+
+        const FIREBASE_CONFIG = {
+            databaseUrl: 'https://khoduclinh-44fb2-default-rtdb.asia-southeast1.firebasedatabase.app',
+            authSecret: '2thXmjLslboHFVvJcI6vm8zrJDaEdLFCOM1EIaj5',
+            syncRootPath: 'crm'
+        };
+
+        let firebaseDataCache = null;
+
+        const DEFAULT_ORDER_STATUSES = {
+            0: { name: 'Chưa hoàn thành', color: '#FF9800' },
+            1: { name: 'Đã hoàn thành', color: '#4CAF50' },
+            2: { name: 'Hủy đơn', color: '#F44336' }
+        };
+
+        const RESERVED_PATH_SEGMENTS = new Set([
+            'timkiem', 'index.html', 'cuahang.html', 'cuahang', '404.html'
+        ]);
+
+        function looksLikePhoneSegment(segment) {
+            if (!segment) return false;
+            if (RESERVED_PATH_SEGMENTS.has(segment.toLowerCase())) return false;
+            if (/\.[a-z0-9]+$/i.test(segment)) return false;
+            const digits = segment.replace(/\D/g, '');
+            return digits.length >= 9 && digits.length <= 15;
+        }
+
+        function getPhoneFromUrl() {
+            const segments = decodeURIComponent(window.location.pathname)
+                .split('/')
+                .filter(Boolean);
+            if (!segments.length) return '';
+            const last = segments[segments.length - 1];
+            return looksLikePhoneSegment(last) ? last : '';
+        }
+
+        function getBaseUrlPath() {
+            let path = decodeURIComponent(window.location.pathname);
+            const phone = getPhoneFromUrl();
+            if (phone) {
+                const suffix = '/' + phone;
+                if (path.endsWith(suffix)) {
+                    path = path.slice(0, -suffix.length);
+                }
+            } else if (path.toLowerCase().endsWith('/index.html')) {
+                path = path.slice(0, -'/index.html'.length);
+            }
+            if (path.length > 1 && path.endsWith('/')) {
+                path = path.slice(0, -1);
+            }
+            return path;
+        }
+
+        function setPhoneInUrl(phone, replace) {
+            const cleanPhone = String(phone || '').trim().replace(/\s+/g, '');
+            if (!cleanPhone) return;
+            const base = getBaseUrlPath();
+            const newPath = `${base}/${encodeURIComponent(cleanPhone)}`;
+            if (window.location.pathname === newPath) return;
+            const state = { phone: cleanPhone };
+            if (replace) {
+                history.replaceState(state, '', newPath);
+            } else {
+                history.pushState(state, '', newPath);
+            }
+        }
+
+        function buildFirebaseUrl(relativePath) {
+            const baseUrl = FIREBASE_CONFIG.databaseUrl.replace(/\/$/, '');
+            const root = FIREBASE_CONFIG.syncRootPath.replace(/^\//, '').replace(/\/$/, '');
+            return `${baseUrl}/${root}/${relativePath}.json?auth=${encodeURIComponent(FIREBASE_CONFIG.authSecret)}`;
+        }
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value == null ? '' : String(value);
+            return div.innerHTML;
+        }
+
+        function normalizePhone(phone) {
+            return (phone || '').replace(/\D/g, '');
+        }
+
+        function phonesMatch(inputPhone, storedPhone) {
+            const input = normalizePhone(inputPhone);
+            const stored = normalizePhone(storedPhone);
+            if (!input || !stored) return false;
+            if (input === stored) return true;
+            return input.slice(-9) === stored.slice(-9);
+        }
+
+        function formatMoney(value) {
+            const amount = Number(value) || 0;
+            return new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
+        }
+
+        function toRecordList(data) {
+            if (!data || typeof data !== 'object') return [];
+            return Object.entries(data).map(([id, item]) => ({ id, ...(item || {}) }));
+        }
+
+        function pickField(record, ...keys) {
+            for (const key of keys) {
+                if (record[key] != null && record[key] !== '') return record[key];
+            }
+            return '';
+        }
+
+        function isDeleted(record) {
+            return record.IsDeleted === true || record.isDeleted === true;
+        }
+
+        async function loadFirebaseData(forceReload) {
+            if (firebaseDataCache && !forceReload) return firebaseDataCache;
+
+            const [customersRes, ordersRes] = await Promise.all([
+                fetch(buildFirebaseUrl('customers')),
+                fetch(buildFirebaseUrl('orderItems'))
+            ]);
+
+            if (!customersRes.ok || !ordersRes.ok) {
+                throw new Error('Không thể kết nối Firebase');
+            }
+
+            const customersRaw = await customersRes.json();
+            const ordersRaw = await ordersRes.json();
+
+            firebaseDataCache = {
+                customers: toRecordList(customersRaw).filter(item => !isDeleted(item)),
+                orders: toRecordList(ordersRaw).filter(item => !isDeleted(item))
+            };
+
+            return firebaseDataCache;
+        }
+
+        function findCustomerByPhone(customers, phoneInput) {
+            return customers.find(customer => phonesMatch(phoneInput, pickField(customer, 'PhoneNumber', 'phoneNumber')));
+        }
+
+        function getCustomerOrders(orders, customerId) {
+            return orders
+                .filter(order => pickField(order, 'CustomerId', 'customerId') === customerId)
+                .sort((a, b) => (Number(b.UpdatedAt || b.updatedAt) || 0) - (Number(a.UpdatedAt || a.updatedAt) || 0));
+        }
+
+        function getOrderStatus(order) {
+            const statusId = Number(pickField(order, 'IsCompleted', 'isCompleted'));
+            const status = DEFAULT_ORDER_STATUSES[statusId];
+            if (status) return status;
+            return { name: 'Đang xử lý', color: '#9E9E9E' };
+        }
+
+        function renderCustomerInfo(customer) {
+            const name = pickField(customer, 'CustomerName', 'customerName') || 'Khách hàng';
+            const address = pickField(customer, 'Address', 'address') || 'Chưa cập nhật';
+            const phone = pickField(customer, 'PhoneNumber', 'phoneNumber') || 'Chưa cập nhật';
+            const avatarBase64 = pickField(customer, 'AvatarDataBase64', 'avatarDataBase64', 'AvatarData', 'avatarData');
+            const avatarSrc = avatarBase64
+                ? `data:image/jpeg;base64,${avatarBase64}`
+                : 'https://via.placeholder.com/120?text=Avatar';
+
+            return `
+                <div class="customer-profile">
+                    <div class="customer-avatar-col">
+                        <img src="${avatarSrc}" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/120?text=Avatar';">
+                    </div>
+                    <div class="customer-info-col">
+                        <h2>${escapeHtml(name)}</h2>
+                        <ul class="customer-facts">
+                            <li>
+                                <span class="fact-label">Địa chỉ</span>
+                                <span class="fact-value">${escapeHtml(address)}</span>
+                            </li>
+                            <li>
+                                <span class="fact-label">Số điện thoại</span>
+                                <span class="fact-value">${escapeHtml(phone)}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderOrderCard(order, index) {
+            const description = pickField(order, 'Description', 'description') || 'Chưa có mô tả';
+            const requirement = pickField(order, 'Requirement', 'requirement') || 'Chưa có yêu cầu';
+            const note = pickField(order, 'Note', 'note') || 'Chưa có ghi chú';
+            const unitPrice = pickField(order, 'UnitPrice', 'unitPrice') || 0;
+            const quantity = pickField(order, 'Quantity', 'quantity') || 0;
+            const totalPrice = pickField(order, 'TotalPrice', 'totalPrice') || (Number(unitPrice) * Number(quantity));
+            const imageBase64 = pickField(order, 'ImageDataBase64', 'imageDataBase64', 'ImageData', 'imageData');
+            const status = getOrderStatus(order);
+
+            const imageHtml = imageBase64
+                ? `<img src="data:image/jpeg;base64,${imageBase64}" alt="Sản phẩm ${index + 1}" class="item-img" onerror="this.parentElement.innerHTML='<span class=\\'order-no-image\\'>Không tải được ảnh</span>';">`
+                : '<span class="order-no-image">Chưa có hình ảnh</span>';
+
+            return `
+                <article class="order">
+                    <div class="order-image-wrap">${imageHtml}</div>
+                    <div class="order-body">
+                        <div class="order-header">
+                            <h4 class="order-title">Đơn hàng #${index + 1}</h4>
+                            <span class="status-badge" style="background-color: ${status.color};">${escapeHtml(status.name)}</span>
+                        </div>
+                        <div class="order-meta">
+                            <div class="meta-item full">
+                                <span class="meta-label">Mô tả</span>
+                                <span class="meta-value">${escapeHtml(description)}</span>
+                            </div>
+                            <div class="meta-item full">
+                                <span class="meta-label">Yêu cầu</span>
+                                <span class="meta-value">${escapeHtml(requirement)}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Giá bán</span>
+                                <span class="meta-value price">${escapeHtml(formatMoney(unitPrice))}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Số lượng</span>
+                                <span class="meta-value">${escapeHtml(quantity)}</span>
+                            </div>
+                            <div class="meta-item full">
+                                <span class="meta-label">Thành tiền</span>
+                                <span class="meta-value total">${escapeHtml(formatMoney(totalPrice))}</span>
+                            </div>
+                            <div class="meta-item full">
+                                <span class="meta-label">Ghi chú</span>
+                                <span class="meta-value note">${escapeHtml(note)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function renderOrders(orders) {
+            if (!orders.length) {
+                return '<p class="no-result">Khách hàng chưa có đơn hàng nào.</p>';
+            }
+
+            const grandTotal = orders.reduce((sum, order) => {
+                const unitPrice = Number(pickField(order, 'UnitPrice', 'unitPrice')) || 0;
+                const quantity = Number(pickField(order, 'Quantity', 'quantity')) || 0;
+                const totalPrice = Number(pickField(order, 'TotalPrice', 'totalPrice')) || (unitPrice * quantity);
+                return sum + totalPrice;
+            }, 0);
+
+            const cards = orders.map((order, index) => renderOrderCard(order, index)).join('');
+            return `
+                <div class="orders-header">
+                    <h3>Danh sách đơn hàng</h3>
+                    <div class="orders-summary">
+                        <strong>${orders.length}</strong> đơn · Tổng: <strong>${escapeHtml(formatMoney(grandTotal))}</strong>
+                    </div>
+                </div>
+                <div class="orders-grid">${cards}</div>
+            `;
+        }
+
         // Tải và hiển thị logo từ file base64
-        fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.base64')
+        fetch('logo.base64')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Không thể tải logo');
@@ -653,20 +1093,26 @@
                 return response.text();
             })
             .then(base64 => {
-                const logo = document.getElementById('logo');
-                logo.src = base64.trim();
+                document.getElementById('logo').src = base64.trim();
             })
-            .catch(error => {
-                console.error('Lỗi tải logo:', error);
-                // Giữ placeholder nếu lỗi
+            .catch(() => {
+                fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/logo.base64')
+                    .then(response => response.ok ? response.text() : Promise.reject())
+                    .then(base64 => { document.getElementById('logo').src = base64.trim(); })
+                    .catch(error => console.error('Lỗi tải logo:', error));
             });
 
-        function timKiemKhachHang() {
-            const phoneInput = document.getElementById('NhapSoDienThoai').value.trim();
+        async function timKiemKhachHang(phoneOverride, options) {
+            options = options || {};
+            const phoneInput = (phoneOverride != null
+                ? String(phoneOverride)
+                : document.getElementById('NhapSoDienThoai').value).trim();
             if (!phoneInput) {
-                alert('Vui lòng nhập số điện thoại!');
+                if (!options.silent) alert('Vui lòng nhập số điện thoại!');
                 return;
             }
+
+            document.getElementById('NhapSoDienThoai').value = phoneInput;
 
             const resultDiv = document.getElementById('result');
             const customerInfoDiv = document.getElementById('customer-info');
@@ -674,83 +1120,63 @@
             const loadingDiv = document.getElementById('loading');
             const button = document.getElementById('TimKiem');
 
-            // Hiển thị loading với hiệu ứng mượt mà
             loadingDiv.classList.add('show');
             button.disabled = true;
             button.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tìm...';
+            resultDiv.classList.remove('show');
 
-            // Sử dụng trực tiếp phoneInput làm tên file .json
-            const url = `https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/${phoneInput}.json`;
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Không tìm thấy file');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const customer = data.Customer;
-                    const orders = data.Orders || [];
+            try {
+                const data = await loadFirebaseData(false);
+                const customer = findCustomerByPhone(data.customers, phoneInput);
 
-                    // Hiển thị thông tin khách hàng
-                    const avatarSrc = customer.AvatarData ? `data:image/png;base64,${customer.AvatarData}` : 'https://via.placeholder.com/100?text=No+Avatar';
-                    customerInfoDiv.innerHTML = `
-                        <img src="${avatarSrc}" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/100?text=No+Avatar';">
-                        <div>
-                            <h2>${customer.CustomerName}</h2>
-                            <p><strong>Địa chỉ:</strong> ${customer.Address}</p>
-                            <p><strong>Số ĐT:</strong> ${customer.PhoneNumber}</p>
-                        </div>
-                    `;
-
-                    // Hiển thị đơn hàng
-                    if (orders.length > 0) {
-                        let ordersHtml = '<h3>Đơn hàng:</h3>';
-                        orders.forEach(order => {
-                            ordersHtml += `
-                                <div class="order">
-                                    <div class="item-row">
-                                        ${order.ImageData ? `<img src="data:image/png;base64,${order.ImageData}" alt="Sản phẩm" class="item-img" onerror="this.style.display='none';">` : ''}
-                                        <div class="item-detail">
-                                            <div class="item-info">
-                                                <div class="item-field"><strong>ItemId:</strong> ${order.ItemId || 'N/A'}</div>
-                                                <div class="item-field"><strong>Requirement:</strong> ${order.Requirement || 'Chưa cập nhật'}</div>
-                                                <div class="item-field"><strong>Quantity:</strong> ${order.Quantity || 0}</div>
-                                                <div class="item-field"><strong>Note:</strong> ${order.Note || 'Đang sử lý'}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        ordersDiv.innerHTML = ordersHtml;
-                    } else {
-                        ordersDiv.innerHTML = '<p class="no-result">Khách hàng chưa có đơn hàng nào.</p>';
-                    }
-
-                    // Hiển thị result với hiệu ứng mượt mà
-                    resultDiv.classList.add('show');
-                })
-                .catch(error => {
+                if (!customer) {
                     customerInfoDiv.innerHTML = '<p class="no-result">Không tìm thấy khách hàng với số điện thoại này.</p>';
                     ordersDiv.innerHTML = '';
-                    resultDiv.classList.add('show');
-                    console.error('Lỗi:', error);
-                })
-                .finally(() => {
-                    // Ẩn loading sau khi hoàn thành (thành công hoặc lỗi)
-                    setTimeout(() => {
-                        loadingDiv.classList.remove('show');
-                    }, 300); // Delay để transition hoàn thành
-                    button.disabled = false;
-                    button.innerHTML = 'Tìm Kiếm';
-                });
+                } else {
+                    const orders = getCustomerOrders(data.orders, customer.id);
+                    customerInfoDiv.innerHTML = renderCustomerInfo(customer);
+                    ordersDiv.innerHTML = renderOrders(orders);
+                }
+
+                resultDiv.classList.add('show');
+                if (!options.skipUrlUpdate) {
+                    setPhoneInUrl(phoneInput, !!options.replaceUrl);
+                }
+            } catch (error) {
+                customerInfoDiv.innerHTML = `<p class="error-message">Lỗi kết nối Firebase: ${escapeHtml(error.message || 'Không xác định')}</p>`;
+                ordersDiv.innerHTML = '';
+                resultDiv.classList.add('show');
+                console.error('Lỗi:', error);
+            } finally {
+                setTimeout(() => loadingDiv.classList.remove('show'), 300);
+                button.disabled = false;
+                button.innerHTML = 'Tìm Kiếm';
+            }
         }
 
         // Xử lý Enter key
         document.getElementById('NhapSoDienThoai').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 timKiemKhachHang();
+            }
+        });
+
+        window.addEventListener('popstate', function() {
+            const phone = getPhoneFromUrl();
+            if (phone) {
+                document.getElementById('NhapSoDienThoai').value = phone;
+                timKiemKhachHang(phone, { replaceUrl: true, skipUrlUpdate: true });
+            } else {
+                document.getElementById('NhapSoDienThoai').value = '';
+                document.getElementById('result').classList.remove('show');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const phone = getPhoneFromUrl();
+            if (phone) {
+                document.getElementById('NhapSoDienThoai').value = phone;
+                timKiemKhachHang(phone, { replaceUrl: true });
             }
         });
 
@@ -763,13 +1189,10 @@
                 loadingText.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải QR...';
                 document.getElementById('paymentModal').classList.add('show');
 
-                fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.base64')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Không thể tải QR');
-                        }
-                        return response.text();
-                    })
+                fetch('payment.base64')
+                    .then(response => response.ok ? response.text() : Promise.reject())
+                    .catch(() => fetch('https://raw.githubusercontent.com/khoduclinh/timkiem/refs/heads/main/payment.base64')
+                        .then(response => response.ok ? response.text() : Promise.reject(new Error('Không thể tải QR'))))
                     .then(base64 => {
                         qrBase64 = base64.trim();
                         const qrImg = document.getElementById('qrImg');

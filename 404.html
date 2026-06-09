@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đang tải...</title>
+    <script>
+        (function () {
+            var segments = location.pathname.split('/').filter(Boolean);
+            var last = decodeURIComponent(segments[segments.length - 1] || '');
+            var digits = last.replace(/\D/g, '');
+            var reserved = { timkiem: 1, index: 1, cuahang: 1 };
+            var isPhone = digits.length >= 9
+                && digits.length <= 15
+                && !/\.[a-z0-9]+$/i.test(last)
+                && !reserved[last.toLowerCase()];
+
+            if (isPhone) {
+                sessionStorage.setItem('spa_path', location.pathname + location.search + location.hash);
+                var base = segments.length > 1 ? '/' + segments.slice(0, -1).join('/') : '';
+                location.replace(base + '/index.html');
+                return;
+            }
+
+            var fallback = segments.length ? '/' + segments[0] + '/index.html' : '/index.html';
+            location.replace(fallback);
+        })();
+    </script>
+</head>
+<body>
+    <p style="text-align:center;font-family:Arial,sans-serif;margin-top:40px;">Đang tải tra cứu...</p>
+</body>
+</html>
