@@ -328,15 +328,48 @@
             color: #333;
             animation: fadeIn 0.7s ease-in-out;
         }
-        .orders-summary {
-            font-size: 14px;
-            color: #555;
-            background: #eef5ff;
-            padding: 8px 14px;
-            border-radius: 20px;
+        .orders-totals {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
         }
-        .orders-summary strong {
-            color: #007bff;
+        .total-box {
+            min-width: 150px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            text-align: center;
+        }
+        .total-label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+        .total-value {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+        .total-box.total-all {
+            background: #e7f1ff;
+            border-color: #b6d4fe;
+            color: #0d6efd;
+        }
+        .total-box.total-pending {
+            background: #fff3e0;
+            border-color: #ffcc80;
+            color: #e65100;
+        }
+        .total-box.total-done {
+            background: #e8f5e9;
+            border-color: #a5d6a7;
+            color: #2e7d32;
         }
         .orders-grid {
             display: grid;
@@ -676,7 +709,15 @@
             }
             .orders-header {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
+            }
+            .orders-totals {
+                width: 100%;
+                justify-content: stretch;
+            }
+            .total-box {
+                flex: 1 1 100%;
+                min-width: 0;
             }
             .footer-banner {
                 padding: 15px;
@@ -969,11 +1010,33 @@
                 .sort((a, b) => (Number(b.UpdatedAt || b.updatedAt) || 0) - (Number(a.UpdatedAt || a.updatedAt) || 0));
         }
 
+        function getOrderStatusId(order) {
+            const raw = pickField(order, 'IsCompleted', 'isCompleted');
+            if (raw === '' || raw == null) return -1;
+            const id = Number(raw);
+            return Number.isFinite(id) ? id : -1;
+        }
+
         function getOrderStatus(order) {
-            const statusId = Number(pickField(order, 'IsCompleted', 'isCompleted'));
+            const statusId = getOrderStatusId(order);
             const status = DEFAULT_ORDER_STATUSES[statusId];
             if (status) return status;
             return { name: 'Đang xử lý', color: '#9E9E9E' };
+        }
+
+        function getOrderTotalPrice(order) {
+            const unitPrice = Number(pickField(order, 'UnitPrice', 'unitPrice')) || 0;
+            const quantity = Number(pickField(order, 'Quantity', 'quantity')) || 0;
+            return Number(pickField(order, 'TotalPrice', 'totalPrice')) || (unitPrice * quantity);
+        }
+
+        function isOrderCompleted(order) {
+            return getOrderStatusId(order) === 1;
+        }
+
+        function isOrderIncomplete(order) {
+            const statusId = getOrderStatusId(order);
+            return statusId !== 1 && statusId !== 2;
         }
 
         function renderCustomerInfo(customer) {
@@ -1065,19 +1128,37 @@
                 return '<p class="no-result">Khách hàng chưa có đơn hàng nào.</p>';
             }
 
-            const grandTotal = orders.reduce((sum, order) => {
-                const unitPrice = Number(pickField(order, 'UnitPrice', 'unitPrice')) || 0;
-                const quantity = Number(pickField(order, 'Quantity', 'quantity')) || 0;
-                const totalPrice = Number(pickField(order, 'TotalPrice', 'totalPrice')) || (unitPrice * quantity);
-                return sum + totalPrice;
-            }, 0);
+            let totalAll = 0;
+            let totalPending = 0;
+            let totalCompleted = 0;
+
+            orders.forEach(order => {
+                const price = getOrderTotalPrice(order);
+                totalAll += price;
+                if (isOrderCompleted(order)) {
+                    totalCompleted += price;
+                } else if (isOrderIncomplete(order)) {
+                    totalPending += price;
+                }
+            });
 
             const cards = orders.map((order, index) => renderOrderCard(order, index)).join('');
             return `
                 <div class="orders-header">
-                    <h3>Danh sách đơn hàng</h3>
-                    <div class="orders-summary">
-                        <strong>${orders.length}</strong> đơn · Tổng: <strong>${escapeHtml(formatMoney(grandTotal))}</strong>
+                    <h3>Danh sách đơn hàng <span style="font-size:14px;font-weight:normal;color:#666;">(${orders.length} đơn)</span></h3>
+                    <div class="orders-totals">
+                        <div class="total-box total-all">
+                            <span class="total-label">Tổng tiền</span>
+                            <span class="total-value">${escapeHtml(formatMoney(totalAll))}</span>
+                        </div>
+                        <div class="total-box total-pending">
+                            <span class="total-label">Chưa hoàn thành</span>
+                            <span class="total-value">${escapeHtml(formatMoney(totalPending))}</span>
+                        </div>
+                        <div class="total-box total-done">
+                            <span class="total-label">Đã hoàn thành</span>
+                            <span class="total-value">${escapeHtml(formatMoney(totalCompleted))}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="orders-grid">${cards}</div>
