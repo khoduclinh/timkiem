@@ -558,7 +558,7 @@
             margin: 0 5px;
         }
 
-        /* CSS cho modal QR thanh toán */
+        /* CSS cho modal QR thanh toán — ảnh gốc 828×1094 */
         .modal {
             display: none;
             position: fixed;
@@ -567,46 +567,70 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.55);
             animation: fadeIn 0.3s ease-in-out;
+            padding: 16px;
         }
         .modal.show {
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .modal-content {
+        .modal-content.payment-modal {
+            position: relative;
             background-color: white;
-            padding: 30px;
-            border-radius: 10px;
+            padding: 28px 24px 22px;
+            border-radius: 14px;
             text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: min(100%, 400px);
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
             animation: fadeIn 0.4s ease-in-out;
         }
-        .modal h2 {
-            margin: 0 0 20px;
-            color: #333;
+        .payment-modal h2 {
+            margin: 0 36px 16px 0;
+            padding-right: 8px;
+            color: #1a2b4a;
+            font-size: 1.15em;
+            line-height: 1.4;
+            text-align: left;
+        }
+        .qr-frame {
+            width: 100%;
+            max-width: 340px;
+            margin: 0 auto 16px;
+            aspect-ratio: 828 / 1094;
+            background: #f8fafc;
+            border: 2px solid #007bff;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 0 1px rgba(0, 123, 255, 0.08);
         }
         .qr-img {
-            width: 300px;
-            height: 300px;
-            margin: 0 auto 20px;
-            border: 2px solid #007bff;
-            border-radius: 10px;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 0;
+            background: #fff;
         }
         .download-btn {
-            padding: 12px 25px;
+            padding: 12px 20px;
             background-color: #28a745;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
+            font-weight: bold;
             text-decoration: none;
             display: block;
-            width: 300px;
+            width: 100%;
+            max-width: 340px;
             margin: 0 auto;
             transition: all 0.3s ease;
         }
@@ -616,15 +640,20 @@
         }
         .close-modal {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
+            top: 12px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            font-size: 22px;
             cursor: pointer;
-            color: #aaa;
-            transition: color 0.3s ease;
+            color: #888;
+            border-radius: 50%;
+            transition: color 0.3s ease, background 0.3s ease;
         }
         .close-modal:hover {
             color: #333;
+            background: #f0f0f0;
         }
 
         @media (max-width: 600px) {
@@ -738,17 +767,22 @@
                 margin: 0 3px;
             }
             /* Modal trên mobile */
-            .modal-content {
-                padding: 20px;
-                margin: 20px;
+            .modal {
+                padding: 12px;
             }
-            .qr-img {
-                width: 225px;
-                height: 225px;
+            .modal-content.payment-modal {
+                padding: 22px 16px 18px;
+            }
+            .payment-modal h2 {
+                font-size: 1.05em;
+                margin-bottom: 14px;
+            }
+            .qr-frame {
+                max-width: 100%;
             }
             .download-btn {
-                width: 225px;
-                padding: 10px 20px;
+                max-width: 100%;
+                padding: 11px 16px;
                 font-size: 14px;
             }
         }
@@ -845,10 +879,12 @@
 
     <!-- Modal QR Thanh toán -->
     <div id="paymentModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+        <div class="modal-content payment-modal">
+            <span class="close-modal" onclick="closePaymentModal()" title="Đóng">&times;</span>
             <h2>Quét mã QR để chuyển khoản</h2>
-            <img id="qrImg" src="" alt="QR Code Thanh toán" class="qr-img">
+            <div class="qr-frame">
+                <img id="qrImg" src="" alt="QR Code Thanh toán" class="qr-img">
+            </div>
             <a id="downloadBtn" class="download-btn" download="qr_thanh_toan.png">
                 <i class="fa fa-download"></i> Tải xuống QR
             </a>
@@ -1266,7 +1302,7 @@
         document.getElementById('paymentBtn').addEventListener('click', function() {
             if (!qrBase64) {
                 // Tải QR nếu chưa tải
-                const loadingText = document.querySelector('.modal-content h2');
+                const loadingText = document.querySelector('.payment-modal h2');
                 loadingText.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải QR...';
                 document.getElementById('paymentModal').classList.add('show');
 
